@@ -591,11 +591,11 @@ footer {
     <div class="card-subtitle">Hourly staff · True cost = pay rate × (1 + on-cost%)</div>
 
     <table id="teamTable">
-      <thead><tr><th>Name</th><th>Role</th><th style="width:100px;">Pay $/hr</th><th style="width:100px;">On-Cost %</th><th style="width:110px;">Billable %</th><th style="width:130px;">True Cost $/hr</th><th style="width:60px;"></th></tr></thead>
+      <thead><tr><th>Name</th><th>Role</th><th style="width:90px;">Pay $/hr</th><th style="width:80px;">On-Cost %</th><th style="width:90px;">Billable %</th><th style="width:90px;">School Days/yr<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">TAFE / training</div></th><th style="width:110px;">Govt Subsidy<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">$/yr (if any)</div></th><th style="width:110px;">True Cost $/hr</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
 
-    <div class="alert good" style="margin-top: 20px; font-size: 12px;"><strong>Billable %:</strong> 100 = full-time on the tools. 70 = 3.5 days/week billable. Non-billable portion of wages flows into overhead automatically. <strong>On-cost:</strong> covers super, workcover, leave loading. <strong>Role "Apprentice":</strong> tags them with the orange APP pill in the quote builder.</div>
+    <div class="alert good" style="margin-top: 20px; font-size: 12px;"><strong>Billable %:</strong> 100 = full-time on the tools. 70 = 3.5 days/week billable. Non-billable portion of wages flows into overhead automatically. <strong>School Days/yr:</strong> any TAFE, training, certifications, license renewals — paid days they're not on the tools. Reduces billable capacity AND adds wages to overhead. Set 0 if they don't go to school. <strong>Govt Subsidy:</strong> any annual government incentive received for this person (apprentice scheme, training subsidies). Offsets overhead. <strong>On-cost:</strong> covers super, workcover, leave loading. <strong>Role "Apprentice":</strong> tags them with the orange APP pill in the quote builder.</div>
   </div>
 
   <div class="card">
@@ -759,7 +759,7 @@ const DEFAULT_STATE = {
     { name: "Cleaning / Rubbish Removal", amount: 11008, type: "fixed" },
     { name: "Tools (consumed/replaced)", amount: 380, type: "per_person" },
     { name: "Protective Clothing & Uniforms", amount: 360, type: "per_person" },
-    { name: "Staff Training / Licences", amount: 1377, type: "per_person" },
+    { name: "Staff Training - Course Fees & Licences", amount: 1377, type: "per_person" },
     { name: "Staff Amenities & Functions", amount: 338, type: "per_person" },
     { name: "Equipment Hire", amount: 3812, type: "fixed" },
     { name: "Advertising", amount: 199, type: "fixed" },
@@ -778,8 +778,8 @@ const DEFAULT_STATE = {
     { name: "Jye Stephens", role: "Installer", payRate: 48, onCost: 25, billablePct: 100 },
     { name: "Jake Deppeler", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 70 },
     { name: "Jackson Lane", role: "Installer", payRate: 35, onCost: 25, billablePct: 100 },
-    { name: "Chaz Stephens", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
-    { name: "Paddy Fairclough", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
+    { name: "Chaz Stephens", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100, schoolDays: 40, apprenticeSubsidy: 5327 },
+    { name: "Paddy Fairclough", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100, schoolDays: 40, apprenticeSubsidy: 5327 },
     { name: "Kellie Winbanks", role: "Director (Office Admin)", isDirector: true, annualWages: 73000, billablePct: 0 },
     { name: "Natasha (Tash) Hahir", role: "Office Admin (3 days)", payRate: 32, onCost: 25, billablePct: 0 }
   ],
@@ -984,6 +984,15 @@ function personAnnualCost(p) {
   return (p.payRate || 0) * (1 + (p.onCost || 0) / 100) * hoursYear;
 }
 
+// School/training days portion of wages (paid but not productive on the tools)
+function schoolWagesAnnual(p) {
+  const days = Number(p.schoolDays) || 0;
+  if (!days) return 0;
+  const workDaysPerYear = 240; // ~5 days/wk × 52wks - leave/sick/pubhol
+  const proportion = Math.min(days / workDaysPerYear, 1);
+  return personAnnualCost(p) * proportion;
+}
+
 // Hourly cost when this person is on a job (used in quote calculations)
 function personHourlyCost(p) {
   if (p.isDirector) {
@@ -995,11 +1004,20 @@ function personHourlyCost(p) {
 }
 
 // Sum of non-billable wages across team — flows into overhead automatically
+// Includes: admin time (1 - billable%) AND school/training days
 function nonBillableWagesAnnual() {
   return state.team.reduce((sum, p) => {
     const billable = (p.billablePct !== undefined ? p.billablePct : 100) / 100;
-    return sum + personAnnualCost(p) * (1 - billable);
+    const annualCost = personAnnualCost(p);
+    const adminPortion = annualCost * (1 - billable);
+    const schoolPortion = schoolWagesAnnual(p) * billable; // already-billable folks who go to school
+    return sum + adminPortion + schoolPortion;
   }, 0);
+}
+
+// Total apprentice subsidy income (offsets overhead)
+function apprenticeSubsidyAnnual() {
+  return state.team.reduce((sum, p) => sum + (Number(p.apprenticeSubsidy) || 0), 0);
 }
 
 // Fleet helpers
@@ -1027,7 +1045,7 @@ function fleetTotalOwing() {
 
 function totalOverhead() {
   const listed = state.overhead.reduce((s, o) => s + scaledAmount(o), 0);
-  return listed + nonBillableWagesAnnual() + fleetDepreciationAnnual();
+  return listed + nonBillableWagesAnnual() + fleetDepreciationAnnual() - apprenticeSubsidyAnnual();
 }
 
 function effectiveHoursPerVan() { return state.autoCalc === 'auto' ? calcAutoHours().billableHours : state.hoursPerVan; }
@@ -1037,7 +1055,11 @@ function totalCapacity() {
   const hoursPerVan = effectiveHoursPerVan();
   const peopleCapacity = state.team.reduce((s, p) => {
     const billable = (p.billablePct !== undefined ? p.billablePct : 100) / 100;
-    return s + billable * hoursPerVan;
+    // school days reduce billable capacity
+    const schoolDays = Number(p.schoolDays) || 0;
+    const schoolFraction = Math.min(schoolDays / 240, 1);
+    const effectiveBillable = billable * (1 - schoolFraction);
+    return s + effectiveBillable * hoursPerVan;
   }, 0);
   const vanCapacity = state.vans * hoursPerVan;
   return Math.min(peopleCapacity, vanCapacity);
@@ -1115,7 +1137,14 @@ function renderOverhead() {
   if (nbw > 0) {
     const tr = document.createElement('tr');
     tr.style.background = 'rgba(255, 90, 31, 0.06)';
-    tr.innerHTML = `<td style="opacity:0.85;"><strong>Non-Billable Wages</strong> <span style="font-size:10px;color:var(--muted);">(auto from Team tab — admin time + admin staff)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">computed</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(nbw)}</td><td class="actions-cell"></td>`;
+    tr.innerHTML = `<td style="opacity:0.85;"><strong>Non-Billable Wages</strong> <span style="font-size:10px;color:var(--muted);">(auto from Team tab — admin time + school/training days + admin staff wages)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">computed</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(nbw)}</td><td class="actions-cell"></td>`;
+    tbody.appendChild(tr);
+  }
+  const subsidy = apprenticeSubsidyAnnual();
+  if (subsidy > 0) {
+    const tr = document.createElement('tr');
+    tr.style.background = 'rgba(74, 192, 142, 0.08)';
+    tr.innerHTML = `<td style="opacity:0.85;"><strong>− Govt Training Subsidies</strong> <span style="font-size:10px;color:var(--muted);">(auto from Team tab — apprentice scheme & other incentives)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">credit</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--good);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">−${fmt$(subsidy)}</td><td class="actions-cell"></td>`;
     tbody.appendChild(tr);
   }
   restoreFocus(tbody, focusInfo);
@@ -1251,7 +1280,7 @@ function renderTeam() {
     if (billable === 0) return; // 0% billable goes in admin section
     const tc = personHourlyCost(p);
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.payRate || 0}" step="0.5" data-row="${i}" data-field="payRate" oninput="updateTeam(${i},'payRate',this.value)"></td><td><input type="number" value="${p.onCost || 0}" step="1" data-row="${i}" data-field="onCost" oninput="updateTeam(${i},'onCost',this.value)"></td><td><input type="number" value="${billable}" step="10" min="0" max="100" data-row="${i}" data-field="billablePct" oninput="updateTeam(${i},'billablePct',this.value)"></td><td><strong>${fmt$2(tc)}</strong></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.payRate || 0}" step="0.5" data-row="${i}" data-field="payRate" oninput="updateTeam(${i},'payRate',this.value)"></td><td><input type="number" value="${p.onCost || 0}" step="1" data-row="${i}" data-field="onCost" oninput="updateTeam(${i},'onCost',this.value)"></td><td><input type="number" value="${billable}" step="10" min="0" max="100" data-row="${i}" data-field="billablePct" oninput="updateTeam(${i},'billablePct',this.value)"></td><td><input type="number" value="${p.schoolDays || 0}" step="1" min="0" max="240" data-row="${i}" data-field="schoolDays" oninput="updateTeam(${i},'schoolDays',this.value)"></td><td><input type="number" value="${p.apprenticeSubsidy || 0}" step="100" min="0" data-row="${i}" data-field="apprenticeSubsidy" oninput="updateTeam(${i},'apprenticeSubsidy',this.value)"></td><td><strong>${fmt$2(tc)}</strong></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
   restoreFocus(tbody, focusInfo);
@@ -1272,7 +1301,7 @@ function renderTeam() {
   restoreFocus(aTbody, aFocus);
 }
 function updateTeam(i, field, val) {
-  const numericFields = ['payRate', 'onCost', 'billablePct', 'annualWages'];
+  const numericFields = ['payRate', 'onCost', 'billablePct', 'annualWages', 'schoolDays', 'apprenticeSubsidy'];
   state.team[i][field] = numericFields.includes(field) ? (parseFloat(val) || 0) : val;
   // for billablePct changes, the person might switch sections - do full re-render
   if (field === 'billablePct' || field === 'annualWages') {
