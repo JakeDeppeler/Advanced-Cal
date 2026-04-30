@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Gas & Aircon — Job Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --ink: #0a0a0a;
+  --paper: #f5f1ea;
+  --paper-2: #ebe6dc;
+  --rule: #1a1a1a;
+  --accent: #d44c1e;
+  --accent-2: #1a4d3a;
+  --muted: #6b6357;
+  --good: #1a4d3a;
+  --bad: #b8351a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+body {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(212,76,30,0.04) 0%, transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(26,77,58,0.04) 0%, transparent 40%);
+}
+.container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+
+header {
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+}
+.logo span { color: var(--accent); }
+.tagline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.status-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 12px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-pill.synced { background: var(--good); }
+.status-pill.error { background: var(--bad); }
+.status-pill.local { background: var(--muted); }
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--paper);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.tab {
+  background: none;
+  border: none;
+  padding: 14px 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.card {
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.card-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 720px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+input[type="text"], input[type="number"], input[type="password"], select, textarea {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 10px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  border-radius: 0;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+input[readonly] { background: var(--paper-2); cursor: not-allowed; }
+
+.btn {
+  background: var(--ink);
+  color: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 10px 18px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--accent); border-color: var(--accent); }
+.btn-secondary { background: var(--paper); color: var(--ink); }
+.btn-secondary:hover { background: var(--ink); color: var(--paper); }
+.btn-danger { background: var(--paper); color: var(--bad); border-color: var(--bad); }
+.btn-danger:hover { background: var(--bad); color: var(--paper); }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+th {
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--ink);
+}
+td { padding: 10px; border-bottom: 1px dashed rgba(0,0,0,0.15); }
+td input { padding: 6px 8px; font-size: 13px; }
+.actions-cell { text-align: right; white-space: nowrap; }
+
+.stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.stat {
+  flex: 1;
+  min-width: 160px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 16px 18px;
+}
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.stat-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.stat-value.accent { color: var(--accent); }
+.stat-value.good { color: var(--good); }
+.stat-value.bad { color: var(--bad); }
+.stat-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.quote-summary { background: var(--ink); color: var(--paper); padding: 28px; border: 1.5px solid var(--ink); }
+.quote-summary .stat { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); color: var(--paper); }
+.quote-summary .stat-label { color: rgba(245,241,234,0.6); }
+.quote-summary .stat-sub { color: rgba(245,241,234,0.5); }
+
+.team-pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.team-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 6px 12px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.team-chip:hover { background: var(--paper-2); }
+.team-chip.selected { background: var(--ink); color: var(--paper); }
+.team-chip .rate { font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: 0.7; }
+.team-chip .role-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--paper);
+  padding: 2px 5px;
+  letter-spacing: 0.08em;
+}
+
+.breakdown {
+  background: var(--paper);
+  border-left: 4px solid var(--accent);
+  padding: 14px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.breakdown .row { display: flex; justify-content: space-between; gap: 12px; }
+.breakdown .row.total { border-top: 1px solid var(--ink); margin-top: 8px; padding-top: 8px; font-weight: 600; }
+
+.slider-row { display: flex; align-items: center; gap: 12px; }
+.slider-row input[type="range"] { flex: 1; }
+.slider-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; min-width: 60px; text-align: right; }
+
+.help { font-size: 12px; color: var(--muted); margin-top: 4px; font-style: italic; }
+.alert {
+  background: rgba(212,76,30,0.1);
+  border-left: 4px solid var(--accent);
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 13px;
+}
+.alert.good { background: rgba(26,77,58,0.08); border-left-color: var(--good); }
+.alert.warn { background: rgba(184,53,26,0.08); border-left-color: var(--bad); }
+
+footer {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 1000;
+}
+.toast.show { opacity: 1; }
+
+.section-divider { height: 1px; background: var(--ink); margin: 24px 0; opacity: 0.2; }
+
+.subcard { background: var(--paper); border: 1px solid var(--ink); padding: 18px; margin-bottom: 16px; }
+.subcard-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.calc-flow { display: flex; flex-direction: column; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.calc-flow .calc-row { display: flex; justify-content: space-between; padding: 4px 0; }
+.calc-flow .calc-row.minus { color: var(--bad); }
+.calc-flow .calc-row.result {
+  border-top: 1.5px solid var(--ink);
+  padding-top: 8px;
+  margin-top: 4px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ============ MAIN APP ============ -->
+<div id="mainApp" class="container">
+
+<header>
+  <div>
+    <div class="logo">ADVANCED<span>.</span><br>JOB CALCULATOR</div>
+    <div class="tagline">Gas & Aircon · Pricing & Profitability Tool</div>
+  </div>
+  <div>
+    <div class="status-pill" id="syncStatus"><div class="status-dot"></div><span id="syncText">CONNECTING</span></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="quote">Quote Builder</button>
+  <button class="tab" data-tab="overhead">Overhead</button>
+  <button class="tab" data-tab="team">Team & Rates</button>
+  <button class="tab" data-tab="jobs">Job Templates</button>
+  <button class="tab" data-tab="dashboard">Dashboard</button>
+</div>
+
+<!-- QUOTE BUILDER -->
+<div class="tab-content active" id="tab-quote">
+  <div class="card">
+    <div class="card-title">New Quote</div>
+    <div class="card-subtitle">Quote stays private to your screen</div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Pricing Mode</label>
+        <select id="qPricingMode">
+          <option value="hourly">Hourly — charge by the hour</option>
+          <option value="fixed">Fixed Price — set a total $ amount</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Job Type</label>
+        <select id="qJobType"></select>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 16px;">
+      <div class="field">
+        <label>Total Job Hours (on-site)</label>
+        <input type="number" id="qHours" step="0.25" min="0">
+        <div class="help">Pulled from template; used to calculate your true cost</div>
+      </div>
+      <div class="field" id="qFixedPriceField" style="display:none;">
+        <label>Fixed Labour Price ($, ex GST, ex materials)</label>
+        <input type="number" id="qFixedPrice" step="50" min="0" value="2000">
+        <div class="help">What you're charging the customer for labour. Materials added separately below.</div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="field">
+      <label>Who's on the job? (click to select crew)</label>
+      <div class="team-pick" id="qTeamPicker"></div>
+      <div class="help">Selection determines your true labour cost</div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="grid-3">
+      <div class="field" id="qHourlyRateField">
+        <label>Crew Charge-Out Rate ($/hr total)</label>
+        <input type="number" id="qChargeRate" step="1" value="180">
+        <div class="help">Your standard $180/hr per van/crew</div>
+      </div>
+      <div class="field">
+        <label>Materials Cost ($)</label>
+        <input type="number" id="qMaterials" step="1" value="0">
+      </div>
+      <div class="field">
+        <label>Materials Markup (%)</label>
+        <input type="number" id="qMarkup" step="1" value="30">
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="field" id="qHourlySliderField">
+      <label>What if I charged more or less per hour?</label>
+      <div class="slider-row">
+        <input type="range" id="qChargeSlider" min="100" max="280" step="5" value="180">
+        <div class="slider-value" id="qChargeSliderValue">$180</div>
+      </div>
+      <div class="help">Drag to see how the margin changes</div>
+    </div>
+
+    <div class="field" id="qFixedSliderField" style="display:none;">
+      <label>What if the fixed price was different?</label>
+      <div class="slider-row">
+        <input type="range" id="qFixedSlider" min="500" max="20000" step="100" value="2000">
+        <div class="slider-value" id="qFixedSliderValue">$2,000</div>
+      </div>
+      <div class="help">Drag to test different fixed-price points</div>
+    </div>
+  </div>
+
+  <div class="quote-summary">
+    <div class="card-title" style="color: var(--paper);">Quote Result</div>
+    <div class="card-subtitle" style="color: rgba(245,241,234,0.6);">Live calculation</div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-label">Quote Total (ex GST)</div>
+        <div class="stat-value accent" id="rTotal">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Net Profit</div>
+        <div class="stat-value" id="rProfit">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Margin</div>
+        <div class="stat-value" id="rMargin">0%</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Inc. GST (10%)</div>
+        <div class="stat-value" id="rGst">$0</div>
+      </div>
+    </div>
+
+    <div class="stat-row" style="margin-top: 12px;" id="rImpliedRow">
+      <div class="stat">
+        <div class="stat-label" id="rImpliedLabel">Implied Hourly Rate</div>
+        <div class="stat-value" id="rImplied">$0</div>
+        <div class="stat-sub" id="rImpliedSub">Effective $/hr based on labour portion of quote</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">vs Standard $180/hr</div>
+        <div class="stat-value" id="rVsStandard">—</div>
+        <div class="stat-sub" id="rVsStandardSub">Difference per hour</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <div class="breakdown" id="rBreakdown" style="background: rgba(255,255,255,0.05); color: var(--paper); border-left-color: var(--accent);"></div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERHEAD -->
+<div class="tab-content" id="tab-overhead">
+  <div class="card">
+    <div class="card-title">Fleet & Billable Hours Calculator</div>
+    <div class="card-subtitle">Auto-calculate realistic billable capacity · Synced</div>
+
+    <div class="grid-3">
+      <div class="field">
+        <label>Number of Vans (currently running)</label>
+        <input type="number" id="ohVans" min="1" max="20" step="1" value="3">
+      </div>
+      <div class="field">
+        <label>Use Auto-Calc?</label>
+        <select id="ohAutoCalc">
+          <option value="auto">Yes — calculate from working hours</option>
+          <option value="manual">No — enter manually</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Billable Hours per Van per Year</label>
+        <input type="number" id="ohHoursPerVan" min="500" max="2200" step="10" value="1600">
+      </div>
+    </div>
+
+    <div id="autoCalcSection">
+      <div class="subcard" style="margin-top: 20px;">
+        <div class="subcard-title">↳ Auto-Calc Inputs · Tweak any number to see impact</div>
+
+        <div class="grid-3">
+          <div class="field"><label>Working days per week</label><input type="number" id="acDaysWeek" step="0.5" min="3" max="7" value="5"></div>
+          <div class="field"><label>Annual leave (days)</label><input type="number" id="acLeave" step="1" min="0" value="20"></div>
+          <div class="field"><label>Sick + personal leave (days)</label><input type="number" id="acSick" step="1" min="0" value="10"></div>
+        </div>
+        <div class="grid-3" style="margin-top: 14px;">
+          <div class="field"><label>Public holidays (days)</label><input type="number" id="acPubHol" step="1" min="0" value="11"></div>
+          <div class="field"><label>Training/RDO/other (days)</label><input type="number" id="acOther" step="1" min="0" value="5"></div>
+          <div class="field"><label>Standard hours per workday</label><input type="number" id="acHoursDay" step="0.25" min="6" max="12" value="8"></div>
+        </div>
+        <div class="grid-3" style="margin-top: 14px;">
+          <div class="field"><label>Drive time per day (hrs)</label><input type="number" id="acDrive" step="0.25" min="0" max="4" value="1"></div>
+          <div class="field"><label>Lunch / breaks per day (hrs)</label><input type="number" id="acLunch" step="0.25" min="0" max="2" value="0.5"></div>
+          <div class="field"><label>Yard / paperwork per day (hrs)</label><input type="number" id="acYard" step="0.25" min="0" max="3" value="0.5"></div>
+        </div>
+        <div class="grid-3" style="margin-top: 14px;">
+          <div class="field"><label>Slow days / warranty / unbillable (%)</label><input type="number" id="acSlow" step="1" min="0" max="40" value="8"><div class="help">% of remaining time you can't bill</div></div>
+          <div class="field" style="grid-column: span 2;"><label>Live Calculation</label><div class="calc-flow" id="calcFlow"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row" style="margin-top: 20px;">
+      <div class="stat"><div class="stat-label">Total Billable Capacity</div><div class="stat-value accent" id="ohCapacity">0</div><div class="stat-sub">hours per year (all vans)</div></div>
+      <div class="stat"><div class="stat-label">Per Van / Year</div><div class="stat-value" id="ohPerVan">0</div><div class="stat-sub">hours</div></div>
+      <div class="stat"><div class="stat-label">Utilization</div><div class="stat-value" id="ohUtil">0%</div><div class="stat-sub">vs 8hr × 5d × 52w</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Annual Overhead Costs <button class="btn btn-sm btn-secondary" onclick="addOverheadRow()">+ Add Cost</button></div>
+    <div class="card-subtitle">All values annualised · Synced across users</div>
+
+    <table id="overheadTable">
+      <thead><tr><th>Description</th><th style="width:160px;">Annual ($)</th><th style="width:80px;"></th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="stat-row" style="margin-top: 24px;">
+      <div class="stat"><div class="stat-label">Total Annual Overhead</div><div class="stat-value accent" id="ohTotal">$0</div></div>
+      <div class="stat"><div class="stat-label">Overhead per Billable Hour</div><div class="stat-value" id="ohPerHour">$0</div><div class="stat-sub">Recovered on every billed hour</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM -->
+<div class="tab-content" id="tab-team">
+  <div class="card">
+    <div class="card-title">Installers & Apprentices <button class="btn btn-sm btn-secondary" onclick="addTeamRow()">+ Add Person</button></div>
+    <div class="card-subtitle">Pay rates are your TRUE cost · Synced across users</div>
+
+    <table id="teamTable">
+      <thead><tr><th>Name</th><th>Role</th><th style="width:120px;">Pay Rate $/hr</th><th style="width:120px;">On-Cost %</th><th style="width:140px;">True Cost $/hr</th><th style="width:80px;"></th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="alert good" style="margin-top: 20px;"><strong>On-cost note:</strong> Your raw hourly rate doesn't capture super (12%), workcover, leave, public holidays, training time, etc. Default 25% on-cost — adjust per person if needed. Set role to "Apprentice" so the calculator labels them correctly.</div>
+  </div>
+</div>
+
+<!-- JOB TEMPLATES -->
+<div class="tab-content" id="tab-jobs">
+  <div class="card">
+    <div class="card-title">Job Templates <button class="btn btn-sm btn-secondary" onclick="addJobRow()">+ Add Job</button></div>
+    <div class="card-subtitle">Standard times · Synced across users</div>
+
+    <table id="jobsTable">
+      <thead><tr><th>Job Name</th><th style="width:140px;">Hours (on-site)</th><th style="width:160px;">Default Crew</th><th style="width:120px;">Notes</th><th style="width:80px;"></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="tab-content" id="tab-dashboard">
+  <div class="card">
+    <div class="card-title">The Numbers · At a Glance</div>
+    <div class="card-subtitle">What your business needs to break even and profit</div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-label">Annual Overhead</div><div class="stat-value" id="dOverhead">$0</div></div>
+      <div class="stat"><div class="stat-label">Billable Capacity</div><div class="stat-value" id="dCapacity">0 hrs</div></div>
+      <div class="stat"><div class="stat-label">Overhead per Hour</div><div class="stat-value accent" id="dOhPerHour">$0</div></div>
+    </div>
+
+    <div class="stat-row" style="margin-top: 16px;">
+      <div class="stat"><div class="stat-label">Avg Crew Cost (1 installer)</div><div class="stat-value" id="dAvgInstaller">$0</div></div>
+      <div class="stat"><div class="stat-label">Avg Crew Cost (installer + apprentice)</div><div class="stat-value" id="dAvgPair">$0</div></div>
+      <div class="stat"><div class="stat-label">Break-Even Crew Rate (pair)</div><div class="stat-value good" id="dBreakeven">$0</div><div class="stat-sub">Min crew rate per hour to break even</div></div>
+    </div>
+
+    <div class="stat-row" style="margin-top: 16px;">
+      <div class="stat"><div class="stat-label">Margin @ $180 (solo)</div><div class="stat-value" id="dMargin180Solo">0%</div></div>
+      <div class="stat"><div class="stat-label">Margin @ $180 (installer + apprentice)</div><div class="stat-value" id="dMargin180Pair">0%</div></div>
+      <div class="stat"><div class="stat-label">Annual Profit @ Full Capacity</div><div class="stat-value" id="dAnnualProfit">$0</div><div class="stat-sub">If every hour billed at $180 (50/50 mix)</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">What-If: Fleet Scenarios</div>
+    <div class="card-subtitle">Break-even at different van counts</div>
+    <table>
+      <thead><tr><th>Vans</th><th>Capacity hrs/yr</th><th>Overhead/hr</th><th>Break-even (solo)</th><th>Break-even (pair)</th><th>Profit @ $180</th></tr></thead>
+      <tbody id="scenarioTable"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Settings</div>
+    <div class="card-subtitle">Backup, restore, reset</div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <button class="btn" onclick="exportData()">Export Settings</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Settings</button>
+      <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+      <button class="btn btn-danger" onclick="resetAll()">Reset to Defaults</button>
+    </div>
+    <div class="help" style="margin-top: 12px;">All shared data (overhead, team, jobs) syncs to Supabase. Your current quote stays in your browser.</div>
+  </div>
+</div>
+
+<footer>
+  <div>Advanced Gas & Air Conditioning Services Pty Ltd</div>
+  <div id="lastSaved">Last saved: never</div>
+</footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  PASTE YOUR SUPABASE KEYS HERE — only place you need to edit
+// ============================================================
+const SUPABASE_URL  = 'PASTE_YOUR_SUPABASE_URL_HERE';   // e.g. 'https://abcdefgh.supabase.co'
+const SUPABASE_KEY  = 'PASTE_YOUR_ANON_KEY_HERE';       // long string starting with 'eyJ...'
+// ============================================================
+
+let supabase = null;
+let saveTimeout = null;
+let isLoadingFromCloud = false;
+
+const DEFAULT_STATE = {
+  vans: 3,
+  hoursPerVan: 1600,
+  autoCalc: 'auto',
+  ac: { daysWeek: 5, leave: 20, sick: 10, pubHol: 11, other: 5, hoursDay: 8, drive: 1, lunch: 0.5, yard: 0.5, slow: 8 },
+  overhead: [
+    { name: "Motor Vehicle - Fuel", amount: 36262 },
+    { name: "Motor Vehicle - Insurance & Rego", amount: 12928 },
+    { name: "Motor Vehicle - Maintenance & Repairs", amount: 15891 },
+    { name: "Motor Vehicle - Tolls & Parking", amount: 996 },
+    { name: "Rent", amount: 35000 },
+    { name: "Body Corporate Fees", amount: 2445 },
+    { name: "Rates & Utilities", amount: 6123 },
+    { name: "Insurance (Public Liability etc)", amount: 16364 },
+    { name: "Workcover", amount: 17144 },
+    { name: "Long Service Leave", amount: 4879 },
+    { name: "Director's Wages + Super", amount: 201981 },
+    { name: "Accounting Fees", amount: 5623 },
+    { name: "Bank Fees & Interest", amount: 33182 },
+    { name: "Subscriptions (Xero, software)", amount: 20275 },
+    { name: "Telephone & Internet", amount: 11651 },
+    { name: "Office Expenses", amount: 5136 },
+    { name: "Cleaning / Rubbish Removal", amount: 10162 },
+    { name: "Tools (consumed/replaced)", amount: 2807 },
+    { name: "Protective Clothing & Uniforms", amount: 2659 },
+    { name: "Staff Training / Licences", amount: 10293 },
+    { name: "Equipment Hire", amount: 3519 },
+    { name: "Depreciation", amount: 8338 },
+    { name: "Advertising & Marketing", amount: 184 },
+    { name: "Client Gifts / Donations", amount: 12193 },
+    { name: "Meeting / Entertainment / Travel", amount: 9112 },
+    { name: "Medical & First Aid", amount: 1385 },
+    { name: "Other (general, printing, repairs)", amount: 1303 }
+  ],
+  team: [
+    { name: "Dean", role: "Director/Lead", payRate: 50, onCost: 0 },
+    { name: "Jye", role: "Installer", payRate: 48, onCost: 25 },
+    { name: "Jake", role: "Installer/Estimator", payRate: 44, onCost: 25 },
+    { name: "Jackson", role: "Installer", payRate: 35, onCost: 25 },
+    { name: "Chaz", role: "Apprentice", payRate: 28, onCost: 20 },
+    { name: "Paddie", role: "Apprentice", payRate: 28, onCost: 20 }
+  ],
+  jobs: [
+    { name: "Heater Changeover (gas ducted)", hours: 4, defaultCrew: "1 installer + 1 apprentice", notes: "" },
+    { name: "Hydronic Heat Pump Install", hours: 2, defaultCrew: "1 installer + 1 apprentice", notes: "" },
+    { name: "Split System Aircon Install", hours: 4, defaultCrew: "1 installer + 1 apprentice", notes: "" },
+    { name: "Ducted Split Install", hours: 24, defaultCrew: "1 installer + 1 apprentice", notes: "3 days × 8 hrs" },
+    { name: "Service Call", hours: 1, defaultCrew: "1 installer", notes: "" }
+  ]
+};
+
+// quote stays local
+const LOCAL_QUOTE_KEY = 'advancedJobCalc_quote_v1';
+let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+let localQuote = { jobIdx: 0, hours: 4, selectedTeam: [], chargeRate: 180, materials: 0, markup: 30, pricingMode: 'hourly', fixedPrice: 2000 };
+
+function loadLocalQuote() {
+  try {
+    const q = localStorage.getItem(LOCAL_QUOTE_KEY);
+    if (q) localQuote = { ...localQuote, ...JSON.parse(q) };
+  } catch (e) {}
+}
+function saveLocalQuote() {
+  localStorage.setItem(LOCAL_QUOTE_KEY, JSON.stringify(localQuote));
+}
+
+function setSyncStatus(status, text) {
+  const pill = document.getElementById('syncStatus');
+  pill.classList.remove('synced', 'error', 'local');
+  if (status) pill.classList.add(status);
+  document.getElementById('syncText').textContent = text;
+}
+
+async function loadFromCloud() {
+  if (!supabase) return;
+  setSyncStatus(null, 'LOADING...');
+  try {
+    const { data, error } = await supabase.from('calc_data').select('data').eq('id', 'main').single();
+    if (error) throw error;
+    if (data && data.data && Object.keys(data.data).length > 0) {
+      isLoadingFromCloud = true;
+      state = { ...DEFAULT_STATE, ...data.data };
+      state.ac = { ...DEFAULT_STATE.ac, ...(data.data.ac || {}) };
+      isLoadingFromCloud = false;
+    }
+    setSyncStatus('synced', 'SYNCED');
+  } catch (e) {
+    console.error(e);
+    setSyncStatus('error', 'OFFLINE — LOCAL ONLY');
+    toast('Could not load from cloud');
+  }
+}
+
+async function saveToCloud() {
+  if (!supabase || isLoadingFromCloud) return;
+  setSyncStatus(null, 'SAVING...');
+  try {
+    const { error } = await supabase.from('calc_data').upsert({ id: 'main', data: state, updated_at: new Date().toISOString() });
+    if (error) throw error;
+    setSyncStatus('synced', 'SYNCED');
+    document.getElementById('lastSaved').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    console.error(e);
+    setSyncStatus('error', 'SAVE FAILED');
+  }
+}
+
+function debouncedSave() {
+  if (saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => saveToCloud(), 800);
+}
+
+// ============ UI INIT ============
+async function init() {
+  if (SUPABASE_URL.startsWith('PASTE_') || SUPABASE_KEY.startsWith('PASTE_')) {
+    document.body.innerHTML = '<div style="max-width:600px;margin:60px auto;padding:40px;font-family:Inter,sans-serif;background:#ebe6dc;border:1.5px solid #0a0a0a;"><h1 style="font-family:Bebas Neue,sans-serif;font-size:32px;margin-bottom:12px;">Setup Needed</h1><p style="margin-bottom:12px;">Open <code style="background:#0a0a0a;color:#f5f1ea;padding:2px 6px;">advanced-job-calculator.html</code> and paste your Supabase URL and anon key into the two lines marked <code style="background:#0a0a0a;color:#f5f1ea;padding:2px 6px;">PASTE_YOUR_..._HERE</code> at the top of the &lt;script&gt; section, then commit and redeploy.</p></div>';
+    return;
+  }
+
+  try {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } catch (e) {
+    document.body.innerHTML = '<div style="padding:40px;font-family:Inter,sans-serif;">Bad Supabase config. Check the keys in the source code.</div>';
+    return;
+  }
+
+  loadLocalQuote();
+  await loadFromCloud();
+  bindEvents();
+  renderAll();
+
+  // realtime sync — auto-pull when others change data
+  supabase.channel('calc_data_changes')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'calc_data' }, async (payload) => {
+      if (payload.new && payload.new.data) {
+        const incoming = JSON.stringify(payload.new.data);
+        const current = JSON.stringify(state);
+        if (incoming !== current) {
+          isLoadingFromCloud = true;
+          state = { ...DEFAULT_STATE, ...payload.new.data };
+          state.ac = { ...DEFAULT_STATE.ac, ...(payload.new.data.ac || {}) };
+          isLoadingFromCloud = false;
+          renderAll();
+          toast('Updated by another user');
+        }
+      }
+    })
+    .subscribe();
+
+  // poll every 30s as a backup
+  setInterval(() => loadFromCloud().then(renderAll), 30000);
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    renderAll();
+  });
+});
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+const fmt$ = (n) => '$' + Math.round(n).toLocaleString('en-AU');
+const fmt$2 = (n) => '$' + n.toFixed(2);
+const fmtPct = (n) => (n).toFixed(1) + '%';
+
+function isApprentice(p) { return (p.role || '').toLowerCase().includes('apprentice'); }
+
+function calcAutoHours() {
+  const ac = state.ac;
+  const totalDaysYear = ac.daysWeek * 52;
+  const workingDays = Math.max(0, totalDaysYear - ac.leave - ac.sick - ac.pubHol - ac.other);
+  const grossHours = workingDays * ac.hoursDay;
+  const lostPerDay = ac.drive + ac.lunch + ac.yard;
+  const onSiteHours = workingDays * Math.max(0, ac.hoursDay - lostPerDay);
+  const billableHours = onSiteHours * (1 - ac.slow / 100);
+  return { totalDaysYear, workingDays, grossHours, lostPerDay, onSiteHours, billableHours: Math.round(billableHours) };
+}
+
+function renderCalcFlow() {
+  const c = calcAutoHours();
+  const ac = state.ac;
+  let html = '';
+  html += `<div class="calc-row"><span>${ac.daysWeek} days/wk × 52 wks</span><span>${c.totalDaysYear} days</span></div>`;
+  html += `<div class="calc-row minus"><span>− leave (${ac.leave}) sick (${ac.sick}) pub hol (${ac.pubHol}) other (${ac.other})</span><span>−${ac.leave + ac.sick + ac.pubHol + ac.other} days</span></div>`;
+  html += `<div class="calc-row"><span>Working days</span><span>${c.workingDays} days</span></div>`;
+  html += `<div class="calc-row"><span>× ${ac.hoursDay} hrs/day</span><span>${c.grossHours.toLocaleString()} hrs gross</span></div>`;
+  html += `<div class="calc-row minus"><span>− drive (${ac.drive}) lunch (${ac.lunch}) yard (${ac.yard}) per day</span><span>−${(c.workingDays * c.lostPerDay).toLocaleString()} hrs</span></div>`;
+  html += `<div class="calc-row"><span>On-site hours</span><span>${c.onSiteHours.toLocaleString()} hrs</span></div>`;
+  html += `<div class="calc-row minus"><span>− ${ac.slow}% slow/warranty/unbillable</span><span>−${Math.round(c.onSiteHours * ac.slow / 100).toLocaleString()} hrs</span></div>`;
+  html += `<div class="calc-row result"><span>BILLABLE PER VAN/YEAR</span><span>${c.billableHours.toLocaleString()} hrs</span></div>`;
+  document.getElementById('calcFlow').innerHTML = html;
+}
+
+function totalOverhead() { return state.overhead.reduce((s, o) => s + (Number(o.amount) || 0), 0); }
+function effectiveHoursPerVan() { return state.autoCalc === 'auto' ? calcAutoHours().billableHours : state.hoursPerVan; }
+function totalCapacity() { return state.vans * effectiveHoursPerVan(); }
+function overheadPerHour() { const cap = totalCapacity(); return cap > 0 ? totalOverhead() / cap : 0; }
+function trueCost(person) { return person.payRate * (1 + (person.onCost || 0) / 100); }
+function avgInstallerCost() {
+  const installers = state.team.filter(p => !isApprentice(p));
+  return installers.length ? installers.reduce((s, p) => s + trueCost(p), 0) / installers.length : 0;
+}
+function avgApprenticeCost() {
+  const apprs = state.team.filter(p => isApprentice(p));
+  return apprs.length ? apprs.reduce((s, p) => s + trueCost(p), 0) / apprs.length : 0;
+}
+
+function renderOverhead() {
+  if (document.activeElement.id !== 'ohVans') document.getElementById('ohVans').value = state.vans;
+  if (document.activeElement.id !== 'ohAutoCalc') document.getElementById('ohAutoCalc').value = state.autoCalc;
+  if (document.activeElement.id !== 'ohHoursPerVan') document.getElementById('ohHoursPerVan').value = effectiveHoursPerVan();
+  document.getElementById('ohHoursPerVan').readOnly = state.autoCalc === 'auto';
+
+  const map = { daysWeek: 'acDaysWeek', leave: 'acLeave', sick: 'acSick', pubHol: 'acPubHol', other: 'acOther', hoursDay: 'acHoursDay', drive: 'acDrive', lunch: 'acLunch', yard: 'acYard', slow: 'acSlow' };
+  Object.keys(state.ac).forEach(k => {
+    const el = document.getElementById(map[k]);
+    if (el && document.activeElement !== el) el.value = state.ac[k];
+  });
+
+  document.getElementById('autoCalcSection').style.display = state.autoCalc === 'auto' ? '' : 'none';
+  renderCalcFlow();
+
+  const cap = totalCapacity();
+  document.getElementById('ohCapacity').textContent = cap.toLocaleString() + ' hrs';
+  document.getElementById('ohPerVan').textContent = effectiveHoursPerVan().toLocaleString() + ' hrs';
+  const utilBase = 8 * 5 * 52;
+  document.getElementById('ohUtil').textContent = (effectiveHoursPerVan() / utilBase * 100).toFixed(0) + '%';
+
+  const tbody = document.querySelector('#overheadTable tbody');
+  const focusInfo = captureFocus(tbody);
+  tbody.innerHTML = '';
+  state.overhead.forEach((o, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
+    tbody.appendChild(tr);
+  });
+  restoreFocus(tbody, focusInfo);
+
+  document.getElementById('ohTotal').textContent = fmt$(totalOverhead());
+  document.getElementById('ohPerHour').textContent = fmt$2(overheadPerHour());
+}
+
+function captureFocus(parent) {
+  const a = document.activeElement;
+  if (!a || !parent.contains(a)) return null;
+  return { row: a.dataset.row, field: a.dataset.field, start: a.selectionStart, end: a.selectionEnd };
+}
+function restoreFocus(parent, info) {
+  if (!info) return;
+  const sel = parent.querySelector(`[data-row="${info.row}"][data-field="${info.field}"]`);
+  if (sel) {
+    sel.focus();
+    try { sel.setSelectionRange(info.start, info.end); } catch (e) {}
+  }
+}
+
+function updateOverhead(i, field, val) {
+  state.overhead[i][field] = field === 'amount' ? parseFloat(val) || 0 : val;
+  document.getElementById('ohTotal').textContent = fmt$(totalOverhead());
+  document.getElementById('ohPerHour').textContent = fmt$2(overheadPerHour());
+  debouncedSave();
+}
+function addOverheadRow() { state.overhead.push({ name: 'New Cost', amount: 0 }); renderOverhead(); debouncedSave(); }
+function removeOverhead(i) { state.overhead.splice(i, 1); renderOverhead(); debouncedSave(); }
+
+function bindEvents() {
+  document.getElementById('ohVans').addEventListener('input', e => { state.vans = parseInt(e.target.value) || 1; renderOverhead(); renderQuote(); renderDashboard(); debouncedSave(); });
+  document.getElementById('ohAutoCalc').addEventListener('change', e => { state.autoCalc = e.target.value; renderOverhead(); renderQuote(); renderDashboard(); debouncedSave(); });
+  document.getElementById('ohHoursPerVan').addEventListener('input', e => {
+    if (state.autoCalc === 'manual') {
+      state.hoursPerVan = parseInt(e.target.value) || 1600;
+      renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
+    }
+  });
+
+  const acFieldMap = { acDaysWeek: 'daysWeek', acLeave: 'leave', acSick: 'sick', acPubHol: 'pubHol', acOther: 'other', acHoursDay: 'hoursDay', acDrive: 'drive', acLunch: 'lunch', acYard: 'yard', acSlow: 'slow' };
+  Object.keys(acFieldMap).forEach(id => {
+    document.getElementById(id).addEventListener('input', e => {
+      state.ac[acFieldMap[id]] = parseFloat(e.target.value) || 0;
+      renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
+    });
+  });
+
+  document.getElementById('qJobType').addEventListener('change', e => {
+    localQuote.jobIdx = parseInt(e.target.value);
+    localQuote.hours = state.jobs[localQuote.jobIdx].hours;
+    saveLocalQuote(); renderQuote();
+  });
+  document.getElementById('qPricingMode').addEventListener('change', e => {
+    localQuote.pricingMode = e.target.value;
+    saveLocalQuote(); renderQuote();
+  });
+  document.getElementById('qFixedPrice').addEventListener('input', e => {
+    localQuote.fixedPrice = parseFloat(e.target.value) || 0;
+    document.getElementById('qFixedSlider').value = Math.min(20000, Math.max(500, localQuote.fixedPrice));
+    document.getElementById('qFixedSliderValue').textContent = '$' + Number(localQuote.fixedPrice).toLocaleString('en-AU');
+    saveLocalQuote(); renderQuote();
+  });
+  document.getElementById('qFixedSlider').addEventListener('input', e => {
+    localQuote.fixedPrice = parseFloat(e.target.value);
+    document.getElementById('qFixedPrice').value = localQuote.fixedPrice;
+    document.getElementById('qFixedSliderValue').textContent = '$' + Number(localQuote.fixedPrice).toLocaleString('en-AU');
+    saveLocalQuote(); renderQuote();
+  });
+  document.getElementById('qHours').addEventListener('input', e => { localQuote.hours = parseFloat(e.target.value) || 0; saveLocalQuote(); renderQuote(); });
+  document.getElementById('qChargeRate').addEventListener('input', e => {
+    localQuote.chargeRate = parseFloat(e.target.value) || 0;
+    document.getElementById('qChargeSlider').value = localQuote.chargeRate;
+    document.getElementById('qChargeSliderValue').textContent = '$' + localQuote.chargeRate;
+    saveLocalQuote(); renderQuote();
+  });
+  document.getElementById('qChargeSlider').addEventListener('input', e => {
+    localQuote.chargeRate = parseFloat(e.target.value);
+    document.getElementById('qChargeRate').value = localQuote.chargeRate;
+    document.getElementById('qChargeSliderValue').textContent = '$' + localQuote.chargeRate;
+    saveLocalQuote(); renderQuote();
+  });
+  document.getElementById('qMaterials').addEventListener('input', e => { localQuote.materials = parseFloat(e.target.value) || 0; saveLocalQuote(); renderQuote(); });
+  document.getElementById('qMarkup').addEventListener('input', e => { localQuote.markup = parseFloat(e.target.value) || 0; saveLocalQuote(); renderQuote(); });
+}
+
+function renderTeam() {
+  const tbody = document.querySelector('#teamTable tbody');
+  const focusInfo = captureFocus(tbody);
+  tbody.innerHTML = '';
+  state.team.forEach((p, i) => {
+    const tc = trueCost(p);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.payRate}" step="0.5" data-row="${i}" data-field="payRate" oninput="updateTeam(${i},'payRate',this.value)"></td><td><input type="number" value="${p.onCost || 0}" step="1" data-row="${i}" data-field="onCost" oninput="updateTeam(${i},'onCost',this.value)"></td><td><strong>${fmt$2(tc)}</strong></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
+    tbody.appendChild(tr);
+  });
+  restoreFocus(tbody, focusInfo);
+}
+function updateTeam(i, field, val) {
+  state.team[i][field] = (field === 'name' || field === 'role') ? val : (parseFloat(val) || 0);
+  // re-render only the true-cost cell, not entire table, to avoid blowing focus
+  const row = document.querySelector(`#teamTable tbody tr:nth-child(${i+1})`);
+  if (row) row.children[4].innerHTML = `<strong>${fmt$2(trueCost(state.team[i]))}</strong>`;
+  renderQuoteTeamPicker();
+  renderQuote();
+  renderDashboard();
+  debouncedSave();
+}
+function addTeamRow() { state.team.push({ name: 'New Person', role: 'Installer', payRate: 30, onCost: 25 }); renderTeam(); renderQuoteTeamPicker(); debouncedSave(); }
+function removeTeam(i) {
+  state.team.splice(i, 1);
+  localQuote.selectedTeam = localQuote.selectedTeam.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx);
+  saveLocalQuote();
+  renderTeam(); renderQuoteTeamPicker(); renderQuote(); renderDashboard(); debouncedSave();
+}
+
+function renderJobs() {
+  const tbody = document.querySelector('#jobsTable tbody');
+  const focusInfo = captureFocus(tbody);
+  tbody.innerHTML = '';
+  state.jobs.forEach((j, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(j.name)}" data-row="${i}" data-field="name" oninput="updateJob(${i},'name',this.value)"></td><td><input type="number" value="${j.hours}" step="0.25" data-row="${i}" data-field="hours" oninput="updateJob(${i},'hours',this.value)"></td><td><input type="text" value="${escapeHtml(j.defaultCrew||'')}" data-row="${i}" data-field="defaultCrew" oninput="updateJob(${i},'defaultCrew',this.value)"></td><td><input type="text" value="${escapeHtml(j.notes||'')}" data-row="${i}" data-field="notes" oninput="updateJob(${i},'notes',this.value)"></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeJob(${i})">×</button></td>`;
+    tbody.appendChild(tr);
+  });
+  restoreFocus(tbody, focusInfo);
+
+  const sel = document.getElementById('qJobType');
+  const currentVal = sel.value;
+  sel.innerHTML = '';
+  state.jobs.forEach((j, i) => {
+    const opt = document.createElement('option');
+    opt.value = i; opt.textContent = j.name;
+    sel.appendChild(opt);
+  });
+  if (localQuote.jobIdx < state.jobs.length) sel.value = localQuote.jobIdx;
+}
+function updateJob(i, field, val) {
+  state.jobs[i][field] = (field === 'hours') ? (parseFloat(val) || 0) : val;
+  // update dropdown text without re-rendering table
+  const opt = document.querySelector(`#qJobType option[value="${i}"]`);
+  if (opt && field === 'name') opt.textContent = val;
+  debouncedSave();
+}
+function addJobRow() { state.jobs.push({ name: 'New Job', hours: 4, defaultCrew: '', notes: '' }); renderJobs(); debouncedSave(); }
+function removeJob(i) { state.jobs.splice(i, 1); if (localQuote.jobIdx >= state.jobs.length) localQuote.jobIdx = 0; saveLocalQuote(); renderJobs(); renderQuote(); debouncedSave(); }
+
+function renderQuoteTeamPicker() {
+  const wrap = document.getElementById('qTeamPicker');
+  wrap.innerHTML = '';
+  state.team.forEach((p, i) => {
+    const sel = localQuote.selectedTeam.includes(i);
+    const appr = isApprentice(p);
+    const chip = document.createElement('div');
+    chip.className = 'team-chip' + (sel ? ' selected' : '');
+    chip.innerHTML = `<span>${escapeHtml(p.name)}</span>${appr ? '<span class="role-tag">APP</span>' : ''}<span class="rate">${fmt$2(trueCost(p))}/hr</span>`;
+    chip.onclick = () => {
+      if (sel) localQuote.selectedTeam = localQuote.selectedTeam.filter(x => x !== i);
+      else localQuote.selectedTeam.push(i);
+      saveLocalQuote();
+      renderQuoteTeamPicker();
+      renderQuote();
+    };
+    wrap.appendChild(chip);
+  });
+}
+
+function renderQuote() {
+  // mode toggle visibility
+  const isHourly = localQuote.pricingMode === 'hourly';
+  document.getElementById('qPricingMode').value = localQuote.pricingMode;
+  document.getElementById('qFixedPriceField').style.display = isHourly ? 'none' : '';
+  document.getElementById('qHourlyRateField').style.display = isHourly ? '' : 'none';
+  document.getElementById('qHourlySliderField').style.display = isHourly ? '' : 'none';
+  document.getElementById('qFixedSliderField').style.display = isHourly ? 'none' : '';
+
+  if (document.activeElement.id !== 'qHours') document.getElementById('qHours').value = localQuote.hours;
+  if (document.activeElement.id !== 'qChargeRate') document.getElementById('qChargeRate').value = localQuote.chargeRate;
+  document.getElementById('qChargeSlider').value = localQuote.chargeRate;
+  document.getElementById('qChargeSliderValue').textContent = '$' + localQuote.chargeRate;
+  if (document.activeElement.id !== 'qFixedPrice') document.getElementById('qFixedPrice').value = localQuote.fixedPrice;
+  document.getElementById('qFixedSlider').value = Math.min(20000, Math.max(500, localQuote.fixedPrice));
+  document.getElementById('qFixedSliderValue').textContent = '$' + Number(localQuote.fixedPrice).toLocaleString('en-AU');
+  if (document.activeElement.id !== 'qMaterials') document.getElementById('qMaterials').value = localQuote.materials;
+  if (document.activeElement.id !== 'qMarkup') document.getElementById('qMarkup').value = localQuote.markup;
+
+  const hours = localQuote.hours;
+  const team = localQuote.selectedTeam.map(i => state.team[i]).filter(Boolean);
+  const materials = localQuote.materials;
+  const markup = localQuote.markup;
+  const ohPerHr = overheadPerHour();
+
+  let labourCost = 0;
+  team.forEach(p => { labourCost += trueCost(p) * hours; });
+
+  // labour charge depends on pricing mode
+  const labourCharge = isHourly ? localQuote.chargeRate * hours : localQuote.fixedPrice;
+
+  const overheadAllocated = ohPerHr * hours;
+  const materialsCharge = materials * (1 + markup / 100);
+  const totalCharge = labourCharge + materialsCharge;
+  const totalCost = labourCost + materials + overheadAllocated;
+  const profit = totalCharge - totalCost;
+  const margin = totalCharge > 0 ? (profit / totalCharge) * 100 : 0;
+
+  // implied hourly rate = labour charge / hours
+  const impliedRate = hours > 0 ? labourCharge / hours : 0;
+  const vsStandard = impliedRate - 180;
+
+  document.getElementById('rTotal').textContent = fmt$(totalCharge);
+  document.getElementById('rProfit').textContent = fmt$(profit);
+  document.getElementById('rProfit').className = 'stat-value ' + (profit >= 0 ? 'good' : 'bad');
+  document.getElementById('rMargin').textContent = fmtPct(margin);
+  document.getElementById('rMargin').className = 'stat-value ' + (margin >= 15 ? 'good' : margin >= 0 ? '' : 'bad');
+  document.getElementById('rGst').textContent = fmt$(totalCharge * 1.1);
+
+  // implied rate stats - only really meaningful in fixed mode but useful both
+  const implEl = document.getElementById('rImplied');
+  implEl.textContent = fmt$2(impliedRate);
+  implEl.className = 'stat-value ' + (impliedRate >= 180 ? 'good' : impliedRate >= 140 ? '' : 'bad');
+  document.getElementById('rImpliedLabel').textContent = isHourly ? 'Charge Rate Used' : 'Implied Hourly Rate';
+  document.getElementById('rImpliedSub').textContent = isHourly ? 'Per crew hour' : `Fixed $${Number(localQuote.fixedPrice).toLocaleString('en-AU')} ÷ ${hours}hr`;
+
+  const vsEl = document.getElementById('rVsStandard');
+  if (vsStandard > 0) {
+    vsEl.textContent = '+' + fmt$2(vsStandard);
+    vsEl.className = 'stat-value good';
+    document.getElementById('rVsStandardSub').textContent = 'Above standard — winning';
+  } else if (vsStandard < 0) {
+    vsEl.textContent = '−' + fmt$2(Math.abs(vsStandard));
+    vsEl.className = 'stat-value bad';
+    document.getElementById('rVsStandardSub').textContent = 'Below standard — leaving money on the table';
+  } else {
+    vsEl.textContent = 'On par';
+    vsEl.className = 'stat-value';
+    document.getElementById('rVsStandardSub').textContent = 'Right at the standard rate';
+  }
+
+  let bd = '';
+  if (team.length === 0) {
+    bd = '<div class="row"><span>No crew selected — pick at least one above</span></div>';
+  } else {
+    if (isHourly) {
+      bd += '<div class="row"><span>LABOUR (crew @ ' + fmt$2(localQuote.chargeRate) + '/hr × ' + hours + 'hrs)</span><span>' + fmt$(labourCharge) + '</span></div>';
+    } else {
+      bd += '<div class="row"><span>LABOUR (FIXED PRICE)</span><span>' + fmt$(labourCharge) + '</span></div>';
+      bd += `<div class="row" style="opacity:0.7; font-size:11px;"><span>&nbsp;&nbsp;Implied rate: ${fmt$2(impliedRate)}/hr × ${hours}hrs</span><span></span></div>`;
+    }
+    bd += '<div class="row"><span>MATERIALS (' + fmt$(materials) + ' + ' + markup + '% markup)</span><span>' + fmt$(materialsCharge) + '</span></div>';
+    bd += '<div class="row total"><span>QUOTE TOTAL</span><span>' + fmt$(totalCharge) + '</span></div>';
+    bd += '<div class="row" style="margin-top:10px;"><span>Less: crew true cost</span><span>−' + fmt$(labourCost) + '</span></div>';
+    team.forEach(p => {
+      bd += `<div class="row" style="opacity:0.7; font-size:11px;"><span>&nbsp;&nbsp;${escapeHtml(p.name)}: ${hours}hr × ${fmt$2(trueCost(p))}</span><span>−${fmt$(trueCost(p)*hours)}</span></div>`;
+    });
+    bd += '<div class="row"><span>Less: materials cost</span><span>−' + fmt$(materials) + '</span></div>';
+    bd += `<div class="row"><span>Less: overhead absorbed (${hours}hr × ${fmt$2(ohPerHr)}/hr)</span><span>−${fmt$(overheadAllocated)}</span></div>`;
+    bd += '<div class="row total"><span>NET PROFIT</span><span>' + fmt$(profit) + '</span></div>';
+  }
+  document.getElementById('rBreakdown').innerHTML = bd;
+}
+
+function renderDashboard() {
+  const oh = totalOverhead();
+  const cap = totalCapacity();
+  const ohHr = overheadPerHour();
+  const avgI = avgInstallerCost();
+  const avgA = avgApprenticeCost();
+
+  document.getElementById('dOverhead').textContent = fmt$(oh);
+  document.getElementById('dCapacity').textContent = cap.toLocaleString() + ' hrs';
+  document.getElementById('dOhPerHour').textContent = fmt$2(ohHr);
+  document.getElementById('dAvgInstaller').textContent = fmt$2(avgI);
+  document.getElementById('dAvgPair').textContent = fmt$2(avgI + avgA);
+
+  const breakeven = ohHr + avgI + avgA;
+  document.getElementById('dBreakeven').textContent = fmt$2(breakeven);
+
+  const profitSolo = 180 - (ohHr + avgI);
+  const marginSolo = (profitSolo / 180) * 100;
+  const elS = document.getElementById('dMargin180Solo');
+  elS.textContent = fmtPct(marginSolo);
+  elS.className = 'stat-value ' + (marginSolo >= 15 ? 'good' : marginSolo >= 0 ? '' : 'bad');
+
+  const profitPair = 180 - breakeven;
+  const marginPair = (profitPair / 180) * 100;
+  const elP = document.getElementById('dMargin180Pair');
+  elP.textContent = fmtPct(marginPair);
+  elP.className = 'stat-value ' + (marginPair >= 15 ? 'good' : marginPair >= 0 ? '' : 'bad');
+
+  const annualProfit = (180 * cap) - oh - (cap * (avgI + avgA * 0.5));
+  const elA = document.getElementById('dAnnualProfit');
+  elA.textContent = fmt$(annualProfit);
+  elA.className = 'stat-value ' + (annualProfit >= 0 ? 'good' : 'bad');
+
+  const tbody = document.getElementById('scenarioTable');
+  tbody.innerHTML = '';
+  for (let v = 2; v <= 6; v++) {
+    const c = v * effectiveHoursPerVan();
+    const oph = oh / c;
+    const beS = oph + avgI;
+    const beP = oph + avgI + avgA;
+    const p180 = (180 - oph - avgI - avgA * 0.5) * c;
+    const tr = document.createElement('tr');
+    const isCurrent = v === state.vans;
+    tr.innerHTML = `<td>${isCurrent ? '<strong>' + v + ' (current)</strong>' : v}</td><td>${c.toLocaleString()}</td><td>${fmt$2(oph)}</td><td><strong>${fmt$2(beS)}</strong></td><td><strong>${fmt$2(beP)}</strong></td><td style="color:${p180>=0?'var(--good)':'var(--bad)'}"><strong>${fmt$(p180)}/yr</strong></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function exportData() {
+  const data = JSON.stringify({ ...state, _exportedAt: new Date().toISOString() }, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'advanced-job-calc-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Settings exported');
+}
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      delete imported._exportedAt;
+      state = { ...DEFAULT_STATE, ...imported };
+      state.ac = { ...DEFAULT_STATE.ac, ...(imported.ac || {}) };
+      renderAll(); debouncedSave(); toast('Settings imported & syncing');
+    } catch (err) { toast('Import failed'); }
+  };
+  reader.readAsText(file);
+}
+function resetAll() {
+  if (!confirm('Reset all settings to defaults? This will erase your data for everyone.')) return;
+  state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  renderAll(); saveToCloud(); toast('Reset complete');
+}
+
+function escapeHtml(str) { return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function renderAll() { renderOverhead(); renderTeam(); renderJobs(); renderQuoteTeamPicker(); renderQuote(); renderDashboard(); }
+
+init();
+</script>
+</body>
+</html>
