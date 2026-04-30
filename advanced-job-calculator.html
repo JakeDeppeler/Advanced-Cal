@@ -700,7 +700,7 @@ const DEFAULT_STATE = {
     { name: "Insurance (Public Liability etc)", amount: 16364, type: "fixed" },
     { name: "Workcover", amount: 17144, type: "per_person" },
     { name: "Long Service Leave", amount: 4879, type: "per_person" },
-    { name: "Director's Wages + Super", amount: 201981, type: "fixed" },
+    { name: "Director's Wages (10% admin portion)", amount: 20198, type: "fixed" },
     { name: "Accounting Fees", amount: 5623, type: "fixed" },
     { name: "Bank Fees & Interest", amount: 33182, type: "fixed" },
     { name: "Subscriptions (Xero, software)", amount: 20275, type: "fixed" },
@@ -718,14 +718,14 @@ const DEFAULT_STATE = {
     { name: "Other (general, printing, repairs)", amount: 1303, type: "fixed" }
   ],
   team: [
-    { name: "Dean", role: "Director/Lead", payRate: 50, onCost: 0, billablePct: 100 },
-    { name: "Jye", role: "Installer", payRate: 48, onCost: 25, billablePct: 100 },
-    { name: "Jake", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 60 },
-    { name: "Jackson", role: "Installer", payRate: 35, onCost: 25, billablePct: 100 },
-    { name: "Chaz", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
-    { name: "Paddie", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
-    { name: "Kellie", role: "Office Admin", payRate: 33, onCost: 25, billablePct: 0 },
-    { name: "Tash", role: "Office Admin (3 days)", payRate: 32, onCost: 25, billablePct: 0 }
+    { name: "Dean Winbanks", role: "Director (true cost rate)", payRate: 153, onCost: 0, billablePct: 90 },
+    { name: "Jye Stephens", role: "Installer", payRate: 48, onCost: 25, billablePct: 100 },
+    { name: "Jake Deppeler", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 60 },
+    { name: "Jackson Lane", role: "Installer", payRate: 35, onCost: 25, billablePct: 100 },
+    { name: "Chaz Stephens", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
+    { name: "Paddy Fairclough", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
+    { name: "Kellie Winbanks", role: "Office Admin", payRate: 32, onCost: 25, billablePct: 0 },
+    { name: "Natasha (Tash) Hahir", role: "Office Admin (3 days)", payRate: 32, onCost: 25, billablePct: 0 }
   ],
   jobs: [
     { name: "Heater Changeover (gas ducted)", hours: 4, defaultCrew: "1 installer + 1 apprentice", notes: "" },
