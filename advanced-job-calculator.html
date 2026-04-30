@@ -644,10 +644,11 @@ footer {
 // ============================================================
 //  PASTE YOUR SUPABASE KEYS HERE — only place you need to edit
 // ============================================================
-const SUPABASE_URL  = 'https://pfvibwgusbfnjopqiszg.supabase.co';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdmlid2d1c2JmbmpvcHFpc3pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTM4MDQsImV4cCI6MjA5MzA2OTgwNH0.hmU22AkVspxQLt1VbuGjgFGjXt3rzfjJlL8i6wF95rs';
+const SUPABASE_URL  = 'https://pfvibwgusbfnjopqiszg.supabase.co/rest/v1/';   // e.g. 'https://abcdefgh.supabase.co'
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdmlid2d1c2JmbmpvcHFpc3pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTM4MDQsImV4cCI6MjA5MzA2OTgwNH0.hmU22AkVspxQLt1VbuGjgFGjXt3rzfjJlL8i6wF95rs';       // long string starting with 'eyJ...'
+// ============================================================
 
-let supabase = null;
+let db = null;
 let saveTimeout = null;
 let isLoadingFromCloud = false;
 
@@ -725,10 +726,10 @@ function setSyncStatus(status, text) {
 }
 
 async function loadFromCloud() {
-  if (!supabase) return;
+  if (!db) return;
   setSyncStatus(null, 'LOADING...');
   try {
-    const { data, error } = await supabase.from('calc_data').select('data').eq('id', 'main').single();
+    const { data, error } = await db.from('calc_data').select('data').eq('id', 'main').single();
     if (error) throw error;
     if (data && data.data && Object.keys(data.data).length > 0) {
       isLoadingFromCloud = true;
@@ -745,10 +746,10 @@ async function loadFromCloud() {
 }
 
 async function saveToCloud() {
-  if (!supabase || isLoadingFromCloud) return;
+  if (!db || isLoadingFromCloud) return;
   setSyncStatus(null, 'SAVING...');
   try {
-    const { error } = await supabase.from('calc_data').upsert({ id: 'main', data: state, updated_at: new Date().toISOString() });
+    const { error } = await db.from('calc_data').upsert({ id: 'main', data: state, updated_at: new Date().toISOString() });
     if (error) throw error;
     setSyncStatus('synced', 'SYNCED');
     document.getElementById('lastSaved').textContent = 'Last synced: ' + new Date().toLocaleTimeString();
@@ -771,7 +772,7 @@ async function init() {
   }
 
   try {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   } catch (e) {
     document.body.innerHTML = '<div style="padding:40px;font-family:Inter,sans-serif;">Bad Supabase config. Check the keys in the source code.</div>';
     return;
@@ -783,7 +784,7 @@ async function init() {
   renderAll();
 
   // realtime sync — auto-pull when others change data
-  supabase.channel('calc_data_changes')
+  db.channel('calc_data_changes')
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'calc_data' }, async (payload) => {
       if (payload.new && payload.new.data) {
         const incoming = JSON.stringify(payload.new.data);
