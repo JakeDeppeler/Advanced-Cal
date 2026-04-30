@@ -544,30 +544,17 @@ footer {
     <div class="card-title">Annual Overhead Costs <button class="btn btn-sm btn-secondary" onclick="addOverheadRow()">+ Add Cost</button></div>
     <div class="card-subtitle">12-month figures · Costs scale automatically with vans / people</div>
 
-    <div class="grid-2" style="margin-bottom: 16px;">
-      <div class="field">
-        <label>Baseline Van Count (when these figures were captured)</label>
-        <input type="number" id="ohBaselineVans" min="1" max="20" step="1" value="4">
-        <div class="help">Per-van costs are divided by this, then × your current van count</div>
-      </div>
-      <div class="field">
-        <label>Baseline Headcount (when these figures were captured)</label>
-        <input type="number" id="ohBaselinePeople" min="1" max="50" step="1" value="6">
-        <div class="help">Per-person costs scale the same way using your team count</div>
-      </div>
-    </div>
-
     <table id="overheadTable">
-      <thead><tr><th>Description</th><th style="width:140px;">Type</th><th style="width:140px;">Annual Total ($)<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">at baseline below</div></th><th style="width:140px;">Per Unit ($)<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">auto-divided</div></th><th style="width:130px;">Scaled to Now ($)</th><th style="width:60px;"></th></tr></thead>
+      <thead><tr><th>Description</th><th style="width:140px;">Type</th><th style="width:140px;">Cost ($)<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">per unit / per year</div></th><th style="width:140px;">× Count<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">multiplier</div></th><th style="width:130px;">Annual Total ($)</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
 
     <div class="alert" style="margin-top: 16px;">
-      <strong>How this works:</strong> Enter the <em>annual total</em> at your baseline van/staff count (set above). The calculator divides by the baseline to get a per-unit figure, then multiplies by your CURRENT count to scale.
+      <strong>How this works:</strong> For <em>Fixed</em> items, enter the annual total. For <em>Per Van</em> or <em>Per Person</em> items, enter the cost FOR ONE van or ONE person — the calculator multiplies by your current count.
       <br><br>
-      <strong>Example:</strong> Fuel $36,000/yr at baseline 4 vans = $9,000 per van. With 3 vans now = $27,000. With 5 vans = $45,000.
+      <strong>Example:</strong> If one van costs $9,000/year in fuel, type 9000 and select "Per Van". With 4 vans, total = $36,000. With 5 vans, $45,000.
       <br><br>
-      <strong>Type guide:</strong> <em>Fixed</em> — same regardless of vans/staff. <em>Per Van</em> — scales with van count. <em>Per Person</em> — scales with headcount.
+      <strong>Type guide:</strong> <em>Fixed</em> — same regardless of vans/staff. <em>Per Van</em> — multiplied by van count. <em>Per Person</em> — multiplied by team count.
     </div>
 
     <div class="stat-row" style="margin-top: 16px;">
@@ -693,17 +680,17 @@ const DEFAULT_STATE = {
   baselineVans: 4,
   baselinePeople: 6,
   overhead: [
-    { name: "Motor Vehicle - Fuel", amount: 36262, type: "per_van" },
-    { name: "Motor Vehicle - Insurance & Rego", amount: 12928, type: "per_van" },
-    { name: "Motor Vehicle - Maintenance & Repairs", amount: 15891, type: "per_van" },
-    { name: "Motor Vehicle - Tolls & Parking", amount: 996, type: "per_van" },
-    { name: "Depreciation", amount: 8338, type: "per_van" },
+    { name: "Motor Vehicle - Fuel", amount: 9066, type: "per_van" },
+    { name: "Motor Vehicle - Insurance & Rego", amount: 3232, type: "per_van" },
+    { name: "Motor Vehicle - Maintenance & Repairs", amount: 3973, type: "per_van" },
+    { name: "Motor Vehicle - Tolls & Parking", amount: 249, type: "per_van" },
+    { name: "Depreciation", amount: 2085, type: "per_van" },
     { name: "Rent", amount: 35000, type: "fixed" },
     { name: "Body Corporate Fees", amount: 2445, type: "fixed" },
     { name: "Rates & Utilities", amount: 6123, type: "fixed" },
     { name: "Insurance (Public Liability etc)", amount: 16364, type: "fixed" },
-    { name: "Workcover", amount: 17144, type: "per_person" },
-    { name: "Long Service Leave", amount: 4879, type: "per_person" },
+    { name: "Workcover", amount: 2857, type: "per_person" },
+    { name: "Long Service Leave", amount: 813, type: "per_person" },
     { name: "Director's Wages (10% admin portion)", amount: 20198, type: "fixed" },
     { name: "Accounting Fees", amount: 5623, type: "fixed" },
     { name: "Bank Fees & Interest", amount: 33182, type: "fixed" },
@@ -711,14 +698,14 @@ const DEFAULT_STATE = {
     { name: "Telephone & Internet", amount: 11651, type: "fixed" },
     { name: "Office Expenses", amount: 5136, type: "fixed" },
     { name: "Cleaning / Rubbish Removal", amount: 10162, type: "fixed" },
-    { name: "Tools (consumed/replaced)", amount: 2807, type: "per_person" },
-    { name: "Protective Clothing & Uniforms", amount: 2659, type: "per_person" },
-    { name: "Staff Training / Licences", amount: 10293, type: "per_person" },
+    { name: "Tools (consumed/replaced)", amount: 468, type: "per_person" },
+    { name: "Protective Clothing & Uniforms", amount: 443, type: "per_person" },
+    { name: "Staff Training / Licences", amount: 1716, type: "per_person" },
     { name: "Equipment Hire", amount: 3519, type: "fixed" },
     { name: "Advertising & Marketing", amount: 184, type: "fixed" },
     { name: "Client Gifts / Donations", amount: 12193, type: "fixed" },
     { name: "Meeting / Entertainment / Travel", amount: 9112, type: "fixed" },
-    { name: "Medical & First Aid", amount: 1385, type: "per_person" },
+    { name: "Medical & First Aid", amount: 231, type: "per_person" },
     { name: "Other (general, printing, repairs)", amount: 1303, type: "fixed" }
   ],
   team: [
@@ -903,12 +890,10 @@ function scaledAmount(item) {
   const amt = Number(item.amount) || 0;
   if (!item.type || item.type === 'fixed') return amt;
   if (item.type === 'per_van') {
-    const baseline = Math.max(1, state.baselineVans || 1);
-    return amt * (state.vans / baseline);
+    return amt * (state.vans || 0);
   }
   if (item.type === 'per_person') {
-    const baseline = Math.max(1, state.baselinePeople || 1);
-    return amt * (state.team.length / baseline);
+    return amt * state.team.length;
   }
   return amt;
 }
@@ -966,8 +951,6 @@ function renderOverhead() {
   if (document.activeElement.id !== 'ohAutoCalc') document.getElementById('ohAutoCalc').value = state.autoCalc;
   if (document.activeElement.id !== 'ohHoursPerVan') document.getElementById('ohHoursPerVan').value = effectiveHoursPerVan();
   document.getElementById('ohHoursPerVan').readOnly = state.autoCalc === 'auto';
-  if (document.activeElement.id !== 'ohBaselineVans') document.getElementById('ohBaselineVans').value = state.baselineVans || 4;
-  if (document.activeElement.id !== 'ohBaselinePeople') document.getElementById('ohBaselinePeople').value = state.baselinePeople || 6;
 
   const map = { daysWeek: 'acDaysWeek', leave: 'acLeave', sick: 'acSick', pubHol: 'acPubHol', other: 'acOther', hoursDay: 'acHoursDay', drive: 'acDrive', lunch: 'acLunch', yard: 'acYard', slow: 'acSlow' };
   Object.keys(state.ac).forEach(k => {
@@ -990,22 +973,23 @@ function renderOverhead() {
   state.overhead.forEach((o, i) => {
     const type = o.type || 'fixed';
     const scaled = scaledAmount(o);
-    const isScaled = type !== 'fixed' && Math.abs(scaled - o.amount) > 0.5;
-    const scaledColor = isScaled ? (scaled > o.amount ? 'var(--bad)' : 'var(--good)') : 'var(--muted)';
-    // calculate per-unit display
-    let perUnitText = '—';
-    let perUnitSub = '';
+    const isScaled = type !== 'fixed';
+    const scaledColor = isScaled ? 'var(--ink)' : 'var(--muted)';
+    // multiplier display
+    let multText = '—';
+    let multSub = '';
     if (type === 'per_van') {
-      const baseline = Math.max(1, state.baselineVans || 1);
-      perUnitText = fmt$(o.amount / baseline);
-      perUnitSub = `÷ ${baseline} vans`;
+      multText = '× ' + (state.vans || 0);
+      multSub = `${state.vans || 0} vans`;
     } else if (type === 'per_person') {
-      const baseline = Math.max(1, state.baselinePeople || 1);
-      perUnitText = fmt$(o.amount / baseline);
-      perUnitSub = `÷ ${baseline} people`;
+      multText = '× ' + state.team.length;
+      multSub = `${state.team.length} people`;
+    } else {
+      multText = '× 1';
+      multSub = 'fixed';
     }
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><select data-row="${i}" data-field="type" onchange="updateOverhead(${i},'type',this.value)"><option value="fixed"${type==='fixed'?' selected':''}>Fixed</option><option value="per_van"${type==='per_van'?' selected':''}>Per Van</option><option value="per_person"${type==='per_person'?' selected':''}>Per Person</option></select></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);">${perUnitText}${perUnitSub ? `<div style="font-size:10px;opacity:0.7;">${perUnitSub}</div>` : ''}</td><td style="color:${scaledColor};font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(scaled)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><select data-row="${i}" data-field="type" onchange="updateOverhead(${i},'type',this.value)"><option value="fixed"${type==='fixed'?' selected':''}>Fixed</option><option value="per_van"${type==='per_van'?' selected':''}>Per Van</option><option value="per_person"${type==='per_person'?' selected':''}>Per Person</option></select></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">${multText}<div style="font-size:10px;opacity:0.7;">${multSub}</div></td><td style="color:${scaledColor};font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(scaled)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
   restoreFocus(tbody, focusInfo);
@@ -1074,14 +1058,6 @@ function bindEvents() {
       state.hoursPerVan = parseInt(e.target.value) || 1600;
       renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
     }
-  });
-  document.getElementById('ohBaselineVans').addEventListener('input', e => {
-    state.baselineVans = parseInt(e.target.value) || 1;
-    renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
-  });
-  document.getElementById('ohBaselinePeople').addEventListener('input', e => {
-    state.baselinePeople = parseInt(e.target.value) || 1;
-    renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
   });
 
   const acFieldMap = { acDaysWeek: 'daysWeek', acLeave: 'leave', acSick: 'sick', acPubHol: 'pubHol', acOther: 'other', acHoursDay: 'hoursDay', acDrive: 'drive', acLunch: 'lunch', acYard: 'yard', acSlow: 'slow' };
