@@ -358,6 +358,7 @@ footer {
   <button class="tab active" data-tab="quote">Quote Builder</button>
   <button class="tab" data-tab="overhead">Overhead</button>
   <button class="tab" data-tab="team">Team & Rates</button>
+  <button class="tab" data-tab="fleet">Fleet</button>
   <button class="tab" data-tab="jobs">Job Templates</button>
   <button class="tab" data-tab="dashboard">Dashboard</button>
 </div>
@@ -610,7 +611,46 @@ footer {
   </div>
 </div>
 
-<!-- JOB TEMPLATES -->
+<!-- FLEET -->
+<div class="tab-content" id="tab-fleet">
+  <div class="card">
+    <div class="card-title">Fleet Register <button class="btn btn-sm btn-secondary" onclick="addVehicle()">+ Add Vehicle</button></div>
+    <div class="card-subtitle">Track each van/vehicle · Depreciation auto-flows into overhead</div>
+
+    <table id="fleetTable">
+      <thead><tr>
+        <th style="min-width:160px;">Make / Model</th>
+        <th style="width:100px;">Rego</th>
+        <th style="width:120px;">Bought For ($)</th>
+        <th style="width:120px;">Loan Owing ($)</th>
+        <th style="width:90px;">Year</th>
+        <th style="width:90px;">Life (yrs)</th>
+        <th style="width:120px;">Status</th>
+        <th style="width:130px;">Annual Dep.<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">straight-line</div></th>
+        <th style="width:120px;">Equity ($)<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">paid - owing</div></th>
+        <th style="width:60px;"></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="stat-row" style="margin-top: 20px;">
+      <div class="stat"><div class="stat-label">Active Vehicles</div><div class="stat-value accent" id="fleetActiveCount">0</div><div class="stat-sub">Drives the "vans" count for overhead</div></div>
+      <div class="stat"><div class="stat-label">Total Fleet Value</div><div class="stat-value" id="fleetTotalValue">$0</div><div class="stat-sub">Sum of purchase prices</div></div>
+      <div class="stat"><div class="stat-label">Total Owing</div><div class="stat-value bad" id="fleetTotalOwing">$0</div><div class="stat-sub">Loan balances</div></div>
+    </div>
+
+    <div class="stat-row" style="margin-top: 16px;">
+      <div class="stat"><div class="stat-label">Total Equity</div><div class="stat-value" id="fleetTotalEquity">$0</div><div class="stat-sub">Value minus loans</div></div>
+      <div class="stat"><div class="stat-label">Annual Depreciation</div><div class="stat-value accent" id="fleetTotalDep">$0</div><div class="stat-sub">Auto-flows into overhead</div></div>
+      <div class="stat"><div class="stat-label">Per-Van Annual Dep.</div><div class="stat-value" id="fleetDepPerVan">$0</div><div class="stat-sub">Average across active fleet</div></div>
+    </div>
+
+    <div class="alert" style="margin-top: 20px;">
+      <strong>How this works:</strong> Each vehicle has a useful life (years). Annual depreciation = Bought For ÷ Life. The total flows into the Overhead tab automatically as a single "Fleet Depreciation" line — you don't enter it manually anymore.<br><br>
+      <strong>Status — Active</strong>: counts as a working van and contributes its share of fuel/maintenance/insurance overhead. <strong>In Repair</strong>: doesn't count as a working van but still depreciates. <strong>Sold</strong>: removed from all calcs (just kept in the list for record-keeping).
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="tab-jobs">
   <div class="card">
     <div class="card-title">Job Templates <button class="btn btn-sm btn-secondary" onclick="addJobRow()">+ Add Job</button></div>
@@ -699,42 +739,56 @@ const DEFAULT_STATE = {
   baselineVans: 4,
   baselinePeople: 6,
   overhead: [
-    { name: "Motor Vehicle - Fuel", amount: 9066, type: "per_van" },
-    { name: "Motor Vehicle - Insurance & Rego", amount: 3232, type: "per_van" },
-    { name: "Motor Vehicle - Maintenance & Repairs", amount: 3973, type: "per_van" },
-    { name: "Motor Vehicle - Tolls & Parking", amount: 249, type: "per_van" },
-    { name: "Depreciation", amount: 2085, type: "per_van" },
-    { name: "Rent", amount: 35000, type: "fixed" },
-    { name: "Body Corporate Fees", amount: 2445, type: "fixed" },
-    { name: "Rates & Utilities", amount: 6123, type: "fixed" },
-    { name: "Insurance (Public Liability etc)", amount: 16364, type: "fixed" },
-    { name: "Workcover", amount: 2857, type: "per_person" },
-    { name: "Long Service Leave", amount: 813, type: "per_person" },
-    { name: "Accounting Fees", amount: 5623, type: "fixed" },
-    { name: "Bank Fees & Interest", amount: 33182, type: "fixed" },
-    { name: "Subscriptions (Xero, software)", amount: 20275, type: "fixed" },
-    { name: "Telephone & Internet", amount: 11651, type: "fixed" },
-    { name: "Office Expenses", amount: 5136, type: "fixed" },
-    { name: "Cleaning / Rubbish Removal", amount: 10162, type: "fixed" },
-    { name: "Tools (consumed/replaced)", amount: 468, type: "per_person" },
-    { name: "Protective Clothing & Uniforms", amount: 443, type: "per_person" },
-    { name: "Staff Training / Licences", amount: 1716, type: "per_person" },
-    { name: "Equipment Hire", amount: 3519, type: "fixed" },
-    { name: "Advertising & Marketing", amount: 184, type: "fixed" },
-    { name: "Client Gifts / Donations", amount: 12193, type: "fixed" },
-    { name: "Meeting / Entertainment / Travel", amount: 9112, type: "fixed" },
-    { name: "Medical & First Aid", amount: 231, type: "per_person" },
-    { name: "Other (general, printing, repairs)", amount: 1303, type: "fixed" }
+    { name: "Motor Vehicle - Fuel", amount: 9634, type: "per_van" },
+    { name: "Motor Vehicle - Insurance & Rego", amount: 3318, type: "per_van" },
+    { name: "Motor Vehicle - Maintenance & Repairs", amount: 4091, type: "per_van" },
+    { name: "Motor Vehicle - Tolls & Parking", amount: 233, type: "per_van" },
+    { name: "Rent", amount: 37917, type: "fixed" },
+    { name: "Body Corporate Fees", amount: 2648, type: "fixed" },
+    { name: "Rates & Utilities", amount: 6530, type: "fixed" },
+    { name: "Insurance (Public Liability etc)", amount: 15061, type: "fixed" },
+    { name: "Workcover", amount: 2322, type: "per_person" },
+    { name: "Long Service Leave", amount: 522, type: "per_person" },
+    { name: "Accounting Fees", amount: 5412, type: "fixed" },
+    { name: "Bank Fees", amount: 13355, type: "fixed" },
+    { name: "Interest Expense", amount: 22480, type: "fixed" },
+    { name: "Subscriptions (Xero, software)", amount: 19849, type: "fixed" },
+    { name: "Telephone & Internet", amount: 11770, type: "fixed" },
+    { name: "Office Expenses", amount: 5374, type: "fixed" },
+    { name: "Printing & Stationery", amount: 504, type: "fixed" },
+    { name: "Cleaning / Rubbish Removal", amount: 11008, type: "fixed" },
+    { name: "Tools (consumed/replaced)", amount: 380, type: "per_person" },
+    { name: "Protective Clothing & Uniforms", amount: 360, type: "per_person" },
+    { name: "Staff Training / Licences", amount: 1377, type: "per_person" },
+    { name: "Staff Amenities & Functions", amount: 338, type: "per_person" },
+    { name: "Equipment Hire", amount: 3812, type: "fixed" },
+    { name: "Advertising", amount: 199, type: "fixed" },
+    { name: "Client Gifts", amount: 5092, type: "fixed" },
+    { name: "Donations / Sponsorships", amount: 5341, type: "fixed" },
+    { name: "Meeting Expenses", amount: 2360, type: "fixed" },
+    { name: "Entertainment", amount: 3622, type: "fixed" },
+    { name: "Travel - National", amount: 3564, type: "fixed" },
+    { name: "Medical & First Aid", amount: 188, type: "per_person" },
+    { name: "Consulting Fees", amount: 335, type: "fixed" },
+    { name: "Repairs and Maintenance", amount: 370, type: "fixed" },
+    { name: "General Expenses", amount: 539, type: "fixed" }
   ],
   team: [
-    { name: "Dean Winbanks", role: "Director/Lead", isDirector: true, annualWages: 200000, billablePct: 90 },
+    { name: "Dean Winbanks", role: "Director/Lead", isDirector: true, annualWages: 130000, billablePct: 90 },
     { name: "Jye Stephens", role: "Installer", payRate: 48, onCost: 25, billablePct: 100 },
     { name: "Jake Deppeler", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 70 },
     { name: "Jackson Lane", role: "Installer", payRate: 35, onCost: 25, billablePct: 100 },
     { name: "Chaz Stephens", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
     { name: "Paddy Fairclough", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
-    { name: "Kellie Winbanks", role: "Office Admin", payRate: 33, onCost: 25, billablePct: 0 },
+    { name: "Kellie Winbanks", role: "Director (Office Admin)", isDirector: true, annualWages: 73000, billablePct: 0 },
     { name: "Natasha (Tash) Hahir", role: "Office Admin (3 days)", payRate: 32, onCost: 25, billablePct: 0 }
+  ],
+  fleet: [
+    { make: "Toyota Hiace", rego: "", purchasePrice: 45000, loanOwing: 31724, year: 2022, lifeYears: 8, status: "active" },
+    { make: "Nissan Patrol", rego: "", purchasePrice: 55000, loanOwing: 39303, year: 2023, lifeYears: 8, status: "active" },
+    { make: "LDV Van 1 (Pepper loan)", rego: "", purchasePrice: 38000, loanOwing: 11753, year: 2020, lifeYears: 8, status: "active" },
+    { make: "LDV Van 2 (Metro loan)", rego: "", purchasePrice: 38000, loanOwing: 10004, year: 2020, lifeYears: 8, status: "in_repair" },
+    { make: "LDV Van 3", rego: "", purchasePrice: 38000, loanOwing: 0, year: 2019, lifeYears: 8, status: "active" }
   ],
   jobs: [
     { name: "Heater Changeover (gas ducted)", hours: 4, defaultCrew: "1 installer + 1 apprentice", notes: "" },
@@ -785,6 +839,7 @@ async function loadFromCloud() {
       }
       if (!state.baselineVans) state.baselineVans = DEFAULT_STATE.baselineVans;
       if (!state.baselinePeople) state.baselinePeople = DEFAULT_STATE.baselinePeople;
+      if (!state.fleet || !Array.isArray(state.fleet)) state.fleet = JSON.parse(JSON.stringify(DEFAULT_STATE.fleet));
       isLoadingFromCloud = false;
     }
     setSyncStatus('synced', 'SYNCED');
@@ -947,8 +1002,32 @@ function nonBillableWagesAnnual() {
   }, 0);
 }
 
+// Fleet helpers
+function vehicleAnnualDep(v) {
+  const price = Number(v.purchasePrice) || 0;
+  const life = Number(v.lifeYears) || 8;
+  if (v.status === 'sold') return 0;
+  return life > 0 ? price / life : 0;
+}
+function vehicleEquity(v) {
+  return (Number(v.purchasePrice) || 0) - (Number(v.loanOwing) || 0);
+}
+function fleetDepreciationAnnual() {
+  return (state.fleet || []).reduce((s, v) => s + vehicleAnnualDep(v), 0);
+}
+function fleetActiveCount() {
+  return (state.fleet || []).filter(v => v.status === 'active').length;
+}
+function fleetTotalValue() {
+  return (state.fleet || []).filter(v => v.status !== 'sold').reduce((s, v) => s + (Number(v.purchasePrice) || 0), 0);
+}
+function fleetTotalOwing() {
+  return (state.fleet || []).filter(v => v.status !== 'sold').reduce((s, v) => s + (Number(v.loanOwing) || 0), 0);
+}
+
 function totalOverhead() {
-  return state.overhead.reduce((s, o) => s + scaledAmount(o), 0) + nonBillableWagesAnnual();
+  const listed = state.overhead.reduce((s, o) => s + scaledAmount(o), 0);
+  return listed + nonBillableWagesAnnual() + fleetDepreciationAnnual();
 }
 
 function effectiveHoursPerVan() { return state.autoCalc === 'auto' ? calcAutoHours().billableHours : state.hoursPerVan; }
@@ -1023,6 +1102,22 @@ function renderOverhead() {
     tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><select data-row="${i}" data-field="type" onchange="updateOverhead(${i},'type',this.value)"><option value="fixed"${type==='fixed'?' selected':''}>Fixed</option><option value="per_van"${type==='per_van'?' selected':''}>Per Van</option><option value="per_person"${type==='per_person'?' selected':''}>Per Person</option></select></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">${multText}<div style="font-size:10px;opacity:0.7;">${multSub}</div></td><td style="color:${scaledColor};font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(scaled)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
+
+  // Append auto-flow virtual rows (read-only)
+  const fleetDep = fleetDepreciationAnnual();
+  if (fleetDep > 0) {
+    const tr = document.createElement('tr');
+    tr.style.background = 'rgba(255, 90, 31, 0.06)';
+    tr.innerHTML = `<td style="opacity:0.85;"><strong>Fleet Depreciation</strong> <span style="font-size:10px;color:var(--muted);">(auto from Fleet tab)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">computed</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(fleetDep)}</td><td class="actions-cell"></td>`;
+    tbody.appendChild(tr);
+  }
+  const nbw = nonBillableWagesAnnual();
+  if (nbw > 0) {
+    const tr = document.createElement('tr');
+    tr.style.background = 'rgba(255, 90, 31, 0.06)';
+    tr.innerHTML = `<td style="opacity:0.85;"><strong>Non-Billable Wages</strong> <span style="font-size:10px;color:var(--muted);">(auto from Team tab — admin time + admin staff)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">computed</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(nbw)}</td><td class="actions-cell"></td>`;
+    tbody.appendChild(tr);
+  }
   restoreFocus(tbody, focusInfo);
 
   const total = totalOverhead();
@@ -1197,6 +1292,87 @@ function removeTeam(i) {
   localQuote.selectedTeam = localQuote.selectedTeam.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx);
   saveLocalQuote();
   renderTeam(); renderQuoteTeamPicker(); renderQuote(); renderOverhead(); renderDashboard(); debouncedSave();
+}
+
+function renderFleet() {
+  if (!state.fleet) state.fleet = [];
+  const tbody = document.querySelector('#fleetTable tbody');
+  if (!tbody) return;
+  const focusInfo = captureFocus(tbody);
+  tbody.innerHTML = '';
+  state.fleet.forEach((v, i) => {
+    const dep = vehicleAnnualDep(v);
+    const equity = vehicleEquity(v);
+    const status = v.status || 'active';
+    const equityColor = equity >= 0 ? 'var(--good)' : 'var(--bad)';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" value="${escapeHtml(v.make || '')}" data-row="${i}" data-field="make" oninput="updateVehicle(${i},'make',this.value)"></td>
+      <td><input type="text" value="${escapeHtml(v.rego || '')}" data-row="${i}" data-field="rego" oninput="updateVehicle(${i},'rego',this.value)"></td>
+      <td><input type="number" value="${v.purchasePrice || 0}" step="500" data-row="${i}" data-field="purchasePrice" oninput="updateVehicle(${i},'purchasePrice',this.value)"></td>
+      <td><input type="number" value="${v.loanOwing || 0}" step="500" data-row="${i}" data-field="loanOwing" oninput="updateVehicle(${i},'loanOwing',this.value)"></td>
+      <td><input type="number" value="${v.year || ''}" step="1" min="1990" max="2030" data-row="${i}" data-field="year" oninput="updateVehicle(${i},'year',this.value)"></td>
+      <td><input type="number" value="${v.lifeYears || 8}" step="1" min="1" max="20" data-row="${i}" data-field="lifeYears" oninput="updateVehicle(${i},'lifeYears',this.value)"></td>
+      <td><select data-row="${i}" data-field="status" onchange="updateVehicle(${i},'status',this.value)">
+        <option value="active"${status === 'active' ? ' selected' : ''}>Active</option>
+        <option value="in_repair"${status === 'in_repair' ? ' selected' : ''}>In Repair</option>
+        <option value="sold"${status === 'sold' ? ' selected' : ''}>Sold</option>
+      </select></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(dep)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${equityColor};font-weight:600;">${fmt$(equity)}</td>
+      <td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeVehicle(${i})">×</button></td>`;
+    tbody.appendChild(tr);
+  });
+  restoreFocus(tbody, focusInfo);
+
+  // update stats
+  const activeCount = fleetActiveCount();
+  const totalValue = fleetTotalValue();
+  const totalOwing = fleetTotalOwing();
+  const totalEquity = totalValue - totalOwing;
+  const totalDep = fleetDepreciationAnnual();
+  const depPerVan = activeCount > 0 ? totalDep / activeCount : 0;
+
+  document.getElementById('fleetActiveCount').textContent = activeCount;
+  document.getElementById('fleetTotalValue').textContent = fmt$(totalValue);
+  document.getElementById('fleetTotalOwing').textContent = fmt$(totalOwing);
+  document.getElementById('fleetTotalEquity').textContent = fmt$(totalEquity);
+  document.getElementById('fleetTotalDep').textContent = fmt$(totalDep);
+  document.getElementById('fleetDepPerVan').textContent = fmt$(depPerVan);
+}
+
+function updateVehicle(i, field, val) {
+  if (!state.fleet) state.fleet = [];
+  const numericFields = ['purchasePrice', 'loanOwing', 'year', 'lifeYears'];
+  state.fleet[i][field] = numericFields.includes(field) ? (parseFloat(val) || 0) : val;
+  // status changes affect dep & overhead — re-render appropriately
+  if (field === 'status' || numericFields.includes(field)) {
+    renderFleet();
+    renderOverhead();
+    renderDashboard();
+  } else {
+    // light update
+    renderFleet();
+  }
+  debouncedSave();
+}
+
+function addVehicle() {
+  if (!state.fleet) state.fleet = [];
+  state.fleet.push({ make: 'New Vehicle', rego: '', purchasePrice: 40000, loanOwing: 0, year: new Date().getFullYear(), lifeYears: 8, status: 'active' });
+  renderFleet();
+  renderOverhead();
+  renderDashboard();
+  debouncedSave();
+}
+
+function removeVehicle(i) {
+  if (!state.fleet) return;
+  state.fleet.splice(i, 1);
+  renderFleet();
+  renderOverhead();
+  renderDashboard();
+  debouncedSave();
 }
 
 function renderJobs() {
@@ -1429,7 +1605,7 @@ function resetAll() {
 
 function escapeHtml(str) { return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-function renderAll() { renderOverhead(); renderTeam(); renderJobs(); renderQuoteTeamPicker(); renderQuote(); renderDashboard(); }
+function renderAll() { renderOverhead(); renderTeam(); renderFleet(); renderJobs(); renderQuoteTeamPicker(); renderQuote(); renderDashboard(); }
 
 init();
 </script>
