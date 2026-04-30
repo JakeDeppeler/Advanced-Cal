@@ -574,15 +574,39 @@ footer {
 <!-- TEAM -->
 <div class="tab-content" id="tab-team">
   <div class="card">
-    <div class="card-title">Team & Office Staff <button class="btn btn-sm btn-secondary" onclick="addTeamRow()">+ Add Person</button></div>
-    <div class="card-subtitle">Includes installers, apprentices and admin · Synced across users</div>
+    <div class="card-title">Directors <button class="btn btn-sm btn-secondary" onclick="addDirectorRow()">+ Add Director</button></div>
+    <div class="card-subtitle">Paid an annual wage · Selectable in quotes at calculated hourly cost</div>
+
+    <table id="directorsTable">
+      <thead><tr><th>Name</th><th>Role</th><th style="width:140px;">Annual Wages ($)</th><th style="width:110px;">Billable %</th><th style="width:160px;">Effective $/hr<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">used in quotes</div></th><th style="width:60px;"></th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="alert" style="margin-top: 16px; font-size: 12px;"><strong>How directors work:</strong> Enter total annual wages (incl. super if applicable). Billable % determines how much is recovered through job pricing vs. flowing to overhead. Effective $/hr = (annual wages × billable%) ÷ billable hours/year — used as the cost when this person is selected on a quote.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Installers & Apprentices <button class="btn btn-sm btn-secondary" onclick="addTeamRow()">+ Add Person</button></div>
+    <div class="card-subtitle">Hourly staff · True cost = pay rate × (1 + on-cost%)</div>
 
     <table id="teamTable">
       <thead><tr><th>Name</th><th>Role</th><th style="width:100px;">Pay $/hr</th><th style="width:100px;">On-Cost %</th><th style="width:110px;">Billable %</th><th style="width:130px;">True Cost $/hr</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
 
-    <div class="alert good" style="margin-top: 20px;"><strong>Billable %:</strong> 100 = full-time on the tools. 60 = 3 days/week billable, 2 days office. 0 = pure admin (Kellie, Tash) — their wages flow into overhead automatically. <strong>On-cost:</strong> covers super, workcover, leave loading. <strong>Role "Apprentice":</strong> tags them with the orange APP pill in the quote builder.</div>
+    <div class="alert good" style="margin-top: 20px; font-size: 12px;"><strong>Billable %:</strong> 100 = full-time on the tools. 70 = 3.5 days/week billable. Non-billable portion of wages flows into overhead automatically. <strong>On-cost:</strong> covers super, workcover, leave loading. <strong>Role "Apprentice":</strong> tags them with the orange APP pill in the quote builder.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Office / Admin Staff <button class="btn btn-sm btn-secondary" onclick="addAdminRow()">+ Add Admin</button></div>
+    <div class="card-subtitle">Non-billable staff · Wages flow directly into overhead</div>
+
+    <table id="adminTable">
+      <thead><tr><th>Name</th><th>Role</th><th style="width:100px;">Pay $/hr</th><th style="width:100px;">On-Cost %</th><th style="width:160px;">Annual Cost</th><th style="width:60px;"></th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="alert" style="margin-top: 16px; font-size: 12px;"><strong>For 3-day-a-week staff:</strong> include "(3 days)" in their role description and the calculator uses 3/5 FTE for annual cost. Same for "(4 days)" or "(2 days)".</div>
   </div>
 </div>
 
@@ -686,8 +710,6 @@ const DEFAULT_STATE = {
     { name: "Insurance (Public Liability etc)", amount: 16364, type: "fixed" },
     { name: "Workcover", amount: 2857, type: "per_person" },
     { name: "Long Service Leave", amount: 813, type: "per_person" },
-    { name: "Office Admin Wages - Kellie (full-time)", amount: 79000, type: "fixed" },
-    { name: "Office Admin Wages - Tash (3 days/wk)", amount: 47000, type: "fixed" },
     { name: "Accounting Fees", amount: 5623, type: "fixed" },
     { name: "Bank Fees & Interest", amount: 33182, type: "fixed" },
     { name: "Subscriptions (Xero, software)", amount: 20275, type: "fixed" },
@@ -705,13 +727,13 @@ const DEFAULT_STATE = {
     { name: "Other (general, printing, repairs)", amount: 1303, type: "fixed" }
   ],
   team: [
-    { name: "Dean Winbanks", role: "Director (true cost rate)", payRate: 153, onCost: 0, billablePct: 90 },
+    { name: "Dean Winbanks", role: "Director/Lead", isDirector: true, annualWages: 200000, billablePct: 90 },
     { name: "Jye Stephens", role: "Installer", payRate: 48, onCost: 25, billablePct: 100 },
-    { name: "Jake Deppeler", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 60 },
+    { name: "Jake Deppeler", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 70 },
     { name: "Jackson Lane", role: "Installer", payRate: 35, onCost: 25, billablePct: 100 },
     { name: "Chaz Stephens", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
     { name: "Paddy Fairclough", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100 },
-    { name: "Kellie Winbanks", role: "Office Admin", payRate: 32, onCost: 25, billablePct: 0 },
+    { name: "Kellie Winbanks", role: "Office Admin", payRate: 33, onCost: 25, billablePct: 0 },
     { name: "Natasha (Tash) Hahir", role: "Office Admin (3 days)", payRate: 32, onCost: 25, billablePct: 0 }
   ],
   jobs: [
@@ -894,13 +916,39 @@ function scaledAmount(item) {
   return amt;
 }
 
-// (admin wages are now editable lines in overhead, not auto-calculated)
-function adminWagesAnnual() {
-  return 0;
+// Annual wage cost for any person (director uses annualWages, others use payRate × on-cost × hours)
+function personAnnualCost(p) {
+  if (p.isDirector) return Number(p.annualWages) || 0;
+  // for hourly staff: detect FTE from role description for part-timers
+  const role = (p.role || '').toLowerCase();
+  let fte = 1;
+  if (role.includes('3 days')) fte = 3/5;
+  else if (role.includes('4 days')) fte = 4/5;
+  else if (role.includes('2 days')) fte = 2/5;
+  const hoursYear = 38 * 52 * fte;
+  return (p.payRate || 0) * (1 + (p.onCost || 0) / 100) * hoursYear;
+}
+
+// Hourly cost when this person is on a job (used in quote calculations)
+function personHourlyCost(p) {
+  if (p.isDirector) {
+    // director's hourly cost = (billable portion of annual wages) / billable hours per year
+    const billableHours = effectiveHoursPerVan() * ((p.billablePct || 0) / 100);
+    return billableHours > 0 ? (personAnnualCost(p) * (p.billablePct || 0) / 100) / billableHours : 0;
+  }
+  return (p.payRate || 0) * (1 + (p.onCost || 0) / 100);
+}
+
+// Sum of non-billable wages across team — flows into overhead automatically
+function nonBillableWagesAnnual() {
+  return state.team.reduce((sum, p) => {
+    const billable = (p.billablePct !== undefined ? p.billablePct : 100) / 100;
+    return sum + personAnnualCost(p) * (1 - billable);
+  }, 0);
 }
 
 function totalOverhead() {
-  return state.overhead.reduce((s, o) => s + scaledAmount(o), 0);
+  return state.overhead.reduce((s, o) => s + scaledAmount(o), 0) + nonBillableWagesAnnual();
 }
 
 function effectiveHoursPerVan() { return state.autoCalc === 'auto' ? calcAutoHours().billableHours : state.hoursPerVan; }
@@ -916,14 +964,17 @@ function totalCapacity() {
   return Math.min(peopleCapacity, vanCapacity);
 }
 function overheadPerHour() { const cap = totalCapacity(); return cap > 0 ? totalOverhead() / cap : 0; }
-function trueCost(person) { return person.payRate * (1 + (person.onCost || 0) / 100); }
+
+// Backwards-compatible alias used in older code paths
+function trueCost(person) { return personHourlyCost(person); }
+
 function avgInstallerCost() {
-  const installers = state.team.filter(p => !isApprentice(p) && (p.billablePct === undefined || p.billablePct > 0));
-  return installers.length ? installers.reduce((s, p) => s + trueCost(p), 0) / installers.length : 0;
+  const installers = state.team.filter(p => !isApprentice(p) && !p.isDirector && (p.billablePct === undefined || p.billablePct > 0));
+  return installers.length ? installers.reduce((s, p) => s + personHourlyCost(p), 0) / installers.length : 0;
 }
 function avgApprenticeCost() {
   const apprs = state.team.filter(p => isApprentice(p) && (p.billablePct === undefined || p.billablePct > 0));
-  return apprs.length ? apprs.reduce((s, p) => s + trueCost(p), 0) / apprs.length : 0;
+  return apprs.length ? apprs.reduce((s, p) => s + personHourlyCost(p), 0) / apprs.length : 0;
 }
 
 function renderOverhead() {
@@ -1081,30 +1132,66 @@ function bindEvents() {
 }
 
 function renderTeam() {
+  // DIRECTORS table
+  const dTbody = document.querySelector('#directorsTable tbody');
+  const dFocus = captureFocus(dTbody);
+  dTbody.innerHTML = '';
+  state.team.forEach((p, i) => {
+    if (!p.isDirector) return;
+    const billable = p.billablePct !== undefined ? p.billablePct : 100;
+    const hourly = personHourlyCost(p);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.annualWages || 0}" step="1000" data-row="${i}" data-field="annualWages" oninput="updateTeam(${i},'annualWages',this.value)"></td><td><input type="number" value="${billable}" step="10" min="0" max="100" data-row="${i}" data-field="billablePct" oninput="updateTeam(${i},'billablePct',this.value)"></td><td><strong>${fmt$2(hourly)}</strong><div style="font-size:10px;color:var(--muted);">@ ${billable}% billable</div></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
+    dTbody.appendChild(tr);
+  });
+  restoreFocus(dTbody, dFocus);
+
+  // INSTALLERS & APPRENTICES table (excludes directors and 0% billable)
   const tbody = document.querySelector('#teamTable tbody');
   const focusInfo = captureFocus(tbody);
   tbody.innerHTML = '';
   state.team.forEach((p, i) => {
-    const tc = trueCost(p);
+    if (p.isDirector) return;
     const billable = p.billablePct !== undefined ? p.billablePct : 100;
+    if (billable === 0) return; // 0% billable goes in admin section
+    const tc = personHourlyCost(p);
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.payRate}" step="0.5" data-row="${i}" data-field="payRate" oninput="updateTeam(${i},'payRate',this.value)"></td><td><input type="number" value="${p.onCost || 0}" step="1" data-row="${i}" data-field="onCost" oninput="updateTeam(${i},'onCost',this.value)"></td><td><input type="number" value="${billable}" step="10" min="0" max="100" data-row="${i}" data-field="billablePct" oninput="updateTeam(${i},'billablePct',this.value)"></td><td><strong>${fmt$2(tc)}</strong></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.payRate || 0}" step="0.5" data-row="${i}" data-field="payRate" oninput="updateTeam(${i},'payRate',this.value)"></td><td><input type="number" value="${p.onCost || 0}" step="1" data-row="${i}" data-field="onCost" oninput="updateTeam(${i},'onCost',this.value)"></td><td><input type="number" value="${billable}" step="10" min="0" max="100" data-row="${i}" data-field="billablePct" oninput="updateTeam(${i},'billablePct',this.value)"></td><td><strong>${fmt$2(tc)}</strong></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
   restoreFocus(tbody, focusInfo);
+
+  // OFFICE/ADMIN table (0% billable, not directors)
+  const aTbody = document.querySelector('#adminTable tbody');
+  const aFocus = captureFocus(aTbody);
+  aTbody.innerHTML = '';
+  state.team.forEach((p, i) => {
+    if (p.isDirector) return;
+    const billable = p.billablePct !== undefined ? p.billablePct : 100;
+    if (billable !== 0) return;
+    const annual = personAnnualCost(p);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.payRate || 0}" step="0.5" data-row="${i}" data-field="payRate" oninput="updateTeam(${i},'payRate',this.value)"></td><td><input type="number" value="${p.onCost || 0}" step="1" data-row="${i}" data-field="onCost" oninput="updateTeam(${i},'onCost',this.value)"></td><td><strong>${fmt$(annual)}/yr</strong><div style="font-size:10px;color:var(--muted);">→ flows to overhead</div></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
+    aTbody.appendChild(tr);
+  });
+  restoreFocus(aTbody, aFocus);
 }
 function updateTeam(i, field, val) {
-  state.team[i][field] = (field === 'name' || field === 'role') ? val : (parseFloat(val) || 0);
-  // re-render only the true-cost cell, not entire table, to avoid blowing focus
-  const row = document.querySelector(`#teamTable tbody tr:nth-child(${i+1})`);
-  if (row) row.children[5].innerHTML = `<strong>${fmt$2(trueCost(state.team[i]))}</strong>`;
+  const numericFields = ['payRate', 'onCost', 'billablePct', 'annualWages'];
+  state.team[i][field] = numericFields.includes(field) ? (parseFloat(val) || 0) : val;
+  // for billablePct changes, the person might switch sections - do full re-render
+  if (field === 'billablePct' || field === 'annualWages') {
+    renderTeam();
+  }
   renderQuoteTeamPicker();
   renderQuote();
   renderOverhead();
   renderDashboard();
   debouncedSave();
 }
-function addTeamRow() { state.team.push({ name: 'New Person', role: 'Installer', payRate: 30, onCost: 25, billablePct: 100 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); debouncedSave(); }
+function addDirectorRow() { state.team.push({ name: 'New Director', role: 'Director', isDirector: true, annualWages: 100000, billablePct: 50 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); debouncedSave(); }
+function addTeamRow() { state.team.push({ name: 'New Installer', role: 'Installer', payRate: 30, onCost: 25, billablePct: 100 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); debouncedSave(); }
+function addAdminRow() { state.team.push({ name: 'New Admin', role: 'Office Admin', payRate: 30, onCost: 25, billablePct: 0 }); renderTeam(); renderOverhead(); renderDashboard(); debouncedSave(); }
 function removeTeam(i) {
   state.team.splice(i, 1);
   localQuote.selectedTeam = localQuote.selectedTeam.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx);
