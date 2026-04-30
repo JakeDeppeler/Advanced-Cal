@@ -558,12 +558,16 @@ footer {
     </div>
 
     <table id="overheadTable">
-      <thead><tr><th>Description</th><th style="width:140px;">Type</th><th style="width:130px;">Annual ($)</th><th style="width:130px;">Scaled ($)</th><th style="width:60px;"></th></tr></thead>
+      <thead><tr><th>Description</th><th style="width:140px;">Type</th><th style="width:140px;">Annual Total ($)<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">at baseline below</div></th><th style="width:140px;">Per Unit ($)<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">auto-divided</div></th><th style="width:130px;">Scaled to Now ($)</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
 
     <div class="alert" style="margin-top: 16px;">
-      <strong>Type guide:</strong> <em>Fixed</em> — same regardless of vans/staff (rent, software, director's wages). <em>Per Van</em> — scales with van count (fuel, rego, maintenance). <em>Per Person</em> — scales with headcount (workcover, training, uniforms).
+      <strong>How this works:</strong> Enter the <em>annual total</em> at your baseline van/staff count (set above). The calculator divides by the baseline to get a per-unit figure, then multiplies by your CURRENT count to scale.
+      <br><br>
+      <strong>Example:</strong> Fuel $36,000/yr at baseline 4 vans = $9,000 per van. With 3 vans now = $27,000. With 5 vans = $45,000.
+      <br><br>
+      <strong>Type guide:</strong> <em>Fixed</em> — same regardless of vans/staff. <em>Per Van</em> — scales with van count. <em>Per Person</em> — scales with headcount.
     </div>
 
     <div class="stat-row" style="margin-top: 16px;">
@@ -988,8 +992,20 @@ function renderOverhead() {
     const scaled = scaledAmount(o);
     const isScaled = type !== 'fixed' && Math.abs(scaled - o.amount) > 0.5;
     const scaledColor = isScaled ? (scaled > o.amount ? 'var(--bad)' : 'var(--good)') : 'var(--muted)';
+    // calculate per-unit display
+    let perUnitText = '—';
+    let perUnitSub = '';
+    if (type === 'per_van') {
+      const baseline = Math.max(1, state.baselineVans || 1);
+      perUnitText = fmt$(o.amount / baseline);
+      perUnitSub = `÷ ${baseline} vans`;
+    } else if (type === 'per_person') {
+      const baseline = Math.max(1, state.baselinePeople || 1);
+      perUnitText = fmt$(o.amount / baseline);
+      perUnitSub = `÷ ${baseline} people`;
+    }
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><select data-row="${i}" data-field="type" onchange="updateOverhead(${i},'type',this.value)"><option value="fixed"${type==='fixed'?' selected':''}>Fixed</option><option value="per_van"${type==='per_van'?' selected':''}>Per Van</option><option value="per_person"${type==='per_person'?' selected':''}>Per Person</option></select></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td style="color:${scaledColor};font-family:'JetBrains Mono',monospace;font-size:13px;">${fmt$(scaled)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><select data-row="${i}" data-field="type" onchange="updateOverhead(${i},'type',this.value)"><option value="fixed"${type==='fixed'?' selected':''}>Fixed</option><option value="per_van"${type==='per_van'?' selected':''}>Per Van</option><option value="per_person"${type==='per_person'?' selected':''}>Per Person</option></select></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);">${perUnitText}${perUnitSub ? `<div style="font-size:10px;opacity:0.7;">${perUnitSub}</div>` : ''}</td><td style="color:${scaledColor};font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(scaled)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
   restoreFocus(tbody, focusInfo);
