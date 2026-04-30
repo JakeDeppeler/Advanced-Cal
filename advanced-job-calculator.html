@@ -558,18 +558,13 @@ footer {
     </div>
 
     <div class="stat-row" style="margin-top: 16px;">
-      <div class="stat"><div class="stat-label">Listed Overhead Subtotal</div><div class="stat-value" id="ohSubtotal">$0</div><div class="stat-sub">From the table above (scaled)</div></div>
-      <div class="stat"><div class="stat-label">+ Admin Wages (auto)</div><div class="stat-value" id="ohAdminWages">$0</div><div class="stat-sub">Office staff (0% billable) wages</div></div>
-      <div class="stat"><div class="stat-label">= Total Overhead</div><div class="stat-value accent" id="ohTotal">$0</div></div>
-    </div>
-
-    <div class="stat-row" style="margin-top: 16px;">
+      <div class="stat"><div class="stat-label">Total Annual Overhead</div><div class="stat-value accent" id="ohTotal">$0</div><div class="stat-sub">at current van/staff levels</div></div>
       <div class="stat"><div class="stat-label">Per Month</div><div class="stat-value" id="ohMonthly">$0</div></div>
       <div class="stat"><div class="stat-label">Per Week</div><div class="stat-value" id="ohWeekly">$0</div></div>
-      <div class="stat"><div class="stat-label">Per Day (5-day week)</div><div class="stat-value" id="ohDaily">$0</div></div>
     </div>
 
     <div class="stat-row" style="margin-top: 16px;">
+      <div class="stat"><div class="stat-label">Per Day (5-day week)</div><div class="stat-value" id="ohDaily">$0</div></div>
       <div class="stat"><div class="stat-label">Overhead per Billable Hour</div><div class="stat-value accent" id="ohPerHour">$0</div><div class="stat-sub">Recovered on every billed hour</div></div>
       <div class="stat"><div class="stat-label">Fixed vs Variable Split</div><div class="stat-value" id="ohSplit" style="font-size:18px;">—</div><div class="stat-sub">Annual fixed / scaled with growth</div></div>
     </div>
@@ -691,7 +686,8 @@ const DEFAULT_STATE = {
     { name: "Insurance (Public Liability etc)", amount: 16364, type: "fixed" },
     { name: "Workcover", amount: 2857, type: "per_person" },
     { name: "Long Service Leave", amount: 813, type: "per_person" },
-    { name: "Director's Wages (10% admin portion)", amount: 20198, type: "fixed" },
+    { name: "Office Admin Wages - Kellie (full-time)", amount: 79000, type: "fixed" },
+    { name: "Office Admin Wages - Tash (3 days/wk)", amount: 47000, type: "fixed" },
     { name: "Accounting Fees", amount: 5623, type: "fixed" },
     { name: "Bank Fees & Interest", amount: 33182, type: "fixed" },
     { name: "Subscriptions (Xero, software)", amount: 20275, type: "fixed" },
@@ -898,29 +894,13 @@ function scaledAmount(item) {
   return amt;
 }
 
-// Annual wages cost for a person (used for non-billable admin staff to add to overhead)
-function annualWages(person) {
-  const hoursYear = 38 * 52; // full-time equivalent
-  // detect part-time from role description
-  const role = (person.role || '').toLowerCase();
-  let fteRatio = 1;
-  if (role.includes('3 days')) fteRatio = 3/5;
-  else if (role.includes('4 days')) fteRatio = 4/5;
-  else if (role.includes('2 days')) fteRatio = 2/5;
-  return person.payRate * (1 + (person.onCost || 0) / 100) * hoursYear * fteRatio;
-}
-
-// Wages of fully-non-billable staff (Kellie, Tash) flow into overhead
+// (admin wages are now editable lines in overhead, not auto-calculated)
 function adminWagesAnnual() {
-  return state.team.reduce((sum, p) => {
-    const billable = p.billablePct !== undefined ? p.billablePct : 100;
-    if (billable === 0) return sum + annualWages(p);
-    return sum;
-  }, 0);
+  return 0;
 }
 
 function totalOverhead() {
-  return state.overhead.reduce((s, o) => s + scaledAmount(o), 0) + adminWagesAnnual();
+  return state.overhead.reduce((s, o) => s + scaledAmount(o), 0);
 }
 
 function effectiveHoursPerVan() { return state.autoCalc === 'auto' ? calcAutoHours().billableHours : state.hoursPerVan; }
@@ -994,11 +974,7 @@ function renderOverhead() {
   });
   restoreFocus(tbody, focusInfo);
 
-  const subtotal = state.overhead.reduce((s, o) => s + scaledAmount(o), 0);
-  const adminWages = adminWagesAnnual();
   const total = totalOverhead();
-  document.getElementById('ohSubtotal').textContent = fmt$(subtotal);
-  document.getElementById('ohAdminWages').textContent = fmt$(adminWages);
   document.getElementById('ohTotal').textContent = fmt$(total);
   document.getElementById('ohMonthly').textContent = fmt$(total / 12);
   document.getElementById('ohWeekly').textContent = fmt$(total / 52);
@@ -1007,10 +983,10 @@ function renderOverhead() {
 
   // fixed/variable split
   const fixedTotal = state.overhead.filter(o => (o.type || 'fixed') === 'fixed').reduce((s, o) => s + scaledAmount(o), 0);
-  const variableTotal = total - fixedTotal - adminWages;
-  const fixedPct = total > 0 ? ((fixedTotal + adminWages) / total * 100).toFixed(0) : 0;
+  const variableTotal = total - fixedTotal;
+  const fixedPct = total > 0 ? (fixedTotal / total * 100).toFixed(0) : 0;
   const varPct = total > 0 ? (variableTotal / total * 100).toFixed(0) : 0;
-  document.getElementById('ohSplit').innerHTML = `${fmt$(fixedTotal + adminWages)} / ${fmt$(variableTotal)}<div class="stat-sub" style="margin-top:2px;">${fixedPct}% fixed · ${varPct}% scales</div>`;
+  document.getElementById('ohSplit').innerHTML = `${fmt$(fixedTotal)} / ${fmt$(variableTotal)}<div class="stat-sub" style="margin-top:2px;">${fixedPct}% fixed · ${varPct}% scales</div>`;
 }
 
 function captureFocus(parent) {
@@ -1036,9 +1012,7 @@ function updateOverhead(i, field, val) {
     renderDashboard();
   } else {
     // light update: recompute totals only
-    const subtotal = state.overhead.reduce((s, o) => s + scaledAmount(o), 0);
     const total = totalOverhead();
-    document.getElementById('ohSubtotal').textContent = fmt$(subtotal);
     document.getElementById('ohTotal').textContent = fmt$(total);
     document.getElementById('ohMonthly').textContent = fmt$(total / 12);
     document.getElementById('ohWeekly').textContent = fmt$(total / 52);
