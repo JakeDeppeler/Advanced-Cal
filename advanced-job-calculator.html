@@ -542,16 +542,40 @@ footer {
 
   <div class="card">
     <div class="card-title">Annual Overhead Costs <button class="btn btn-sm btn-secondary" onclick="addOverheadRow()">+ Add Cost</button></div>
-    <div class="card-subtitle">All values annualised · Synced across users</div>
+    <div class="card-subtitle">12-month figures · Costs scale automatically with vans / people</div>
+
+    <div class="grid-2" style="margin-bottom: 16px;">
+      <div class="field">
+        <label>Baseline Van Count (when these figures were captured)</label>
+        <input type="number" id="ohBaselineVans" min="1" max="20" step="1" value="4">
+        <div class="help">Per-van costs are divided by this, then × your current van count</div>
+      </div>
+      <div class="field">
+        <label>Baseline Headcount (when these figures were captured)</label>
+        <input type="number" id="ohBaselinePeople" min="1" max="50" step="1" value="6">
+        <div class="help">Per-person costs scale the same way using your team count</div>
+      </div>
+    </div>
 
     <table id="overheadTable">
-      <thead><tr><th>Description</th><th style="width:160px;">Annual ($)</th><th style="width:80px;"></th></tr></thead>
+      <thead><tr><th>Description</th><th style="width:140px;">Type</th><th style="width:130px;">Annual ($)</th><th style="width:130px;">Scaled ($)</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
 
+    <div class="alert" style="margin-top: 16px;">
+      <strong>Type guide:</strong> <em>Fixed</em> — same regardless of vans/staff (rent, software, director's wages). <em>Per Van</em> — scales with van count (fuel, rego, maintenance). <em>Per Person</em> — scales with headcount (workcover, training, uniforms).
+    </div>
+
     <div class="stat-row" style="margin-top: 24px;">
-      <div class="stat"><div class="stat-label">Total Annual Overhead</div><div class="stat-value accent" id="ohTotal">$0</div></div>
-      <div class="stat"><div class="stat-label">Overhead per Billable Hour</div><div class="stat-value" id="ohPerHour">$0</div><div class="stat-sub">Recovered on every billed hour</div></div>
+      <div class="stat"><div class="stat-label">Total Annual Overhead</div><div class="stat-value accent" id="ohTotal">$0</div><div class="stat-sub">at current van/staff levels</div></div>
+      <div class="stat"><div class="stat-label">Per Month</div><div class="stat-value" id="ohMonthly">$0</div></div>
+      <div class="stat"><div class="stat-label">Per Week</div><div class="stat-value" id="ohWeekly">$0</div></div>
+    </div>
+
+    <div class="stat-row" style="margin-top: 16px;">
+      <div class="stat"><div class="stat-label">Per Day (5-day week)</div><div class="stat-value" id="ohDaily">$0</div></div>
+      <div class="stat"><div class="stat-label">Overhead per Billable Hour</div><div class="stat-value accent" id="ohPerHour">$0</div><div class="stat-sub">Recovered on every billed hour</div></div>
+      <div class="stat"><div class="stat-label">Fixed vs Variable Split</div><div class="stat-value" id="ohSplit" style="font-size:18px;">—</div><div class="stat-sub">Annual fixed / scaled with growth</div></div>
     </div>
   </div>
 </div>
@@ -657,34 +681,36 @@ const DEFAULT_STATE = {
   hoursPerVan: 1600,
   autoCalc: 'auto',
   ac: { daysWeek: 5, leave: 20, sick: 10, pubHol: 11, other: 5, hoursDay: 8, drive: 1, lunch: 0.5, yard: 0.5, slow: 8 },
+  baselineVans: 4,
+  baselinePeople: 6,
   overhead: [
-    { name: "Motor Vehicle - Fuel", amount: 36262 },
-    { name: "Motor Vehicle - Insurance & Rego", amount: 12928 },
-    { name: "Motor Vehicle - Maintenance & Repairs", amount: 15891 },
-    { name: "Motor Vehicle - Tolls & Parking", amount: 996 },
-    { name: "Rent", amount: 35000 },
-    { name: "Body Corporate Fees", amount: 2445 },
-    { name: "Rates & Utilities", amount: 6123 },
-    { name: "Insurance (Public Liability etc)", amount: 16364 },
-    { name: "Workcover", amount: 17144 },
-    { name: "Long Service Leave", amount: 4879 },
-    { name: "Director's Wages + Super", amount: 201981 },
-    { name: "Accounting Fees", amount: 5623 },
-    { name: "Bank Fees & Interest", amount: 33182 },
-    { name: "Subscriptions (Xero, software)", amount: 20275 },
-    { name: "Telephone & Internet", amount: 11651 },
-    { name: "Office Expenses", amount: 5136 },
-    { name: "Cleaning / Rubbish Removal", amount: 10162 },
-    { name: "Tools (consumed/replaced)", amount: 2807 },
-    { name: "Protective Clothing & Uniforms", amount: 2659 },
-    { name: "Staff Training / Licences", amount: 10293 },
-    { name: "Equipment Hire", amount: 3519 },
-    { name: "Depreciation", amount: 8338 },
-    { name: "Advertising & Marketing", amount: 184 },
-    { name: "Client Gifts / Donations", amount: 12193 },
-    { name: "Meeting / Entertainment / Travel", amount: 9112 },
-    { name: "Medical & First Aid", amount: 1385 },
-    { name: "Other (general, printing, repairs)", amount: 1303 }
+    { name: "Motor Vehicle - Fuel", amount: 36262, type: "per_van" },
+    { name: "Motor Vehicle - Insurance & Rego", amount: 12928, type: "per_van" },
+    { name: "Motor Vehicle - Maintenance & Repairs", amount: 15891, type: "per_van" },
+    { name: "Motor Vehicle - Tolls & Parking", amount: 996, type: "per_van" },
+    { name: "Depreciation", amount: 8338, type: "per_van" },
+    { name: "Rent", amount: 35000, type: "fixed" },
+    { name: "Body Corporate Fees", amount: 2445, type: "fixed" },
+    { name: "Rates & Utilities", amount: 6123, type: "fixed" },
+    { name: "Insurance (Public Liability etc)", amount: 16364, type: "fixed" },
+    { name: "Workcover", amount: 17144, type: "per_person" },
+    { name: "Long Service Leave", amount: 4879, type: "per_person" },
+    { name: "Director's Wages + Super", amount: 201981, type: "fixed" },
+    { name: "Accounting Fees", amount: 5623, type: "fixed" },
+    { name: "Bank Fees & Interest", amount: 33182, type: "fixed" },
+    { name: "Subscriptions (Xero, software)", amount: 20275, type: "fixed" },
+    { name: "Telephone & Internet", amount: 11651, type: "fixed" },
+    { name: "Office Expenses", amount: 5136, type: "fixed" },
+    { name: "Cleaning / Rubbish Removal", amount: 10162, type: "fixed" },
+    { name: "Tools (consumed/replaced)", amount: 2807, type: "per_person" },
+    { name: "Protective Clothing & Uniforms", amount: 2659, type: "per_person" },
+    { name: "Staff Training / Licences", amount: 10293, type: "per_person" },
+    { name: "Equipment Hire", amount: 3519, type: "fixed" },
+    { name: "Advertising & Marketing", amount: 184, type: "fixed" },
+    { name: "Client Gifts / Donations", amount: 12193, type: "fixed" },
+    { name: "Meeting / Entertainment / Travel", amount: 9112, type: "fixed" },
+    { name: "Medical & First Aid", amount: 1385, type: "per_person" },
+    { name: "Other (general, printing, repairs)", amount: 1303, type: "fixed" }
   ],
   team: [
     { name: "Dean", role: "Director/Lead", payRate: 50, onCost: 0 },
@@ -735,6 +761,14 @@ async function loadFromCloud() {
       isLoadingFromCloud = true;
       state = { ...DEFAULT_STATE, ...data.data };
       state.ac = { ...DEFAULT_STATE.ac, ...(data.data.ac || {}) };
+      // migrate: items without 'type' get inherited from defaults by name match, fallback to 'fixed'
+      if (state.overhead) {
+        const defaultTypeByName = {};
+        DEFAULT_STATE.overhead.forEach(d => { defaultTypeByName[d.name] = d.type; });
+        state.overhead = state.overhead.map(o => o.type ? o : { ...o, type: defaultTypeByName[o.name] || 'fixed' });
+      }
+      if (!state.baselineVans) state.baselineVans = DEFAULT_STATE.baselineVans;
+      if (!state.baselinePeople) state.baselinePeople = DEFAULT_STATE.baselinePeople;
       isLoadingFromCloud = false;
     }
     setSyncStatus('synced', 'SYNCED');
@@ -854,7 +888,20 @@ function renderCalcFlow() {
   document.getElementById('calcFlow').innerHTML = html;
 }
 
-function totalOverhead() { return state.overhead.reduce((s, o) => s + (Number(o.amount) || 0), 0); }
+function scaledAmount(item) {
+  const amt = Number(item.amount) || 0;
+  if (!item.type || item.type === 'fixed') return amt;
+  if (item.type === 'per_van') {
+    const baseline = Math.max(1, state.baselineVans || 1);
+    return amt * (state.vans / baseline);
+  }
+  if (item.type === 'per_person') {
+    const baseline = Math.max(1, state.baselinePeople || 1);
+    return amt * (state.team.length / baseline);
+  }
+  return amt;
+}
+function totalOverhead() { return state.overhead.reduce((s, o) => s + scaledAmount(o), 0); }
 function effectiveHoursPerVan() { return state.autoCalc === 'auto' ? calcAutoHours().billableHours : state.hoursPerVan; }
 function totalCapacity() { return state.vans * effectiveHoursPerVan(); }
 function overheadPerHour() { const cap = totalCapacity(); return cap > 0 ? totalOverhead() / cap : 0; }
@@ -873,6 +920,8 @@ function renderOverhead() {
   if (document.activeElement.id !== 'ohAutoCalc') document.getElementById('ohAutoCalc').value = state.autoCalc;
   if (document.activeElement.id !== 'ohHoursPerVan') document.getElementById('ohHoursPerVan').value = effectiveHoursPerVan();
   document.getElementById('ohHoursPerVan').readOnly = state.autoCalc === 'auto';
+  if (document.activeElement.id !== 'ohBaselineVans') document.getElementById('ohBaselineVans').value = state.baselineVans || 4;
+  if (document.activeElement.id !== 'ohBaselinePeople') document.getElementById('ohBaselinePeople').value = state.baselinePeople || 6;
 
   const map = { daysWeek: 'acDaysWeek', leave: 'acLeave', sick: 'acSick', pubHol: 'acPubHol', other: 'acOther', hoursDay: 'acHoursDay', drive: 'acDrive', lunch: 'acLunch', yard: 'acYard', slow: 'acSlow' };
   Object.keys(state.ac).forEach(k => {
@@ -893,14 +942,29 @@ function renderOverhead() {
   const focusInfo = captureFocus(tbody);
   tbody.innerHTML = '';
   state.overhead.forEach((o, i) => {
+    const type = o.type || 'fixed';
+    const scaled = scaledAmount(o);
+    const isScaled = type !== 'fixed' && Math.abs(scaled - o.amount) > 0.5;
+    const scaledColor = isScaled ? (scaled > o.amount ? 'var(--bad)' : 'var(--good)') : 'var(--muted)';
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><select data-row="${i}" data-field="type" onchange="updateOverhead(${i},'type',this.value)"><option value="fixed"${type==='fixed'?' selected':''}>Fixed</option><option value="per_van"${type==='per_van'?' selected':''}>Per Van</option><option value="per_person"${type==='per_person'?' selected':''}>Per Person</option></select></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td style="color:${scaledColor};font-family:'JetBrains Mono',monospace;font-size:13px;">${fmt$(scaled)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
   restoreFocus(tbody, focusInfo);
 
-  document.getElementById('ohTotal').textContent = fmt$(totalOverhead());
+  const total = totalOverhead();
+  document.getElementById('ohTotal').textContent = fmt$(total);
+  document.getElementById('ohMonthly').textContent = fmt$(total / 12);
+  document.getElementById('ohWeekly').textContent = fmt$(total / 52);
+  document.getElementById('ohDaily').textContent = fmt$(total / 260);
   document.getElementById('ohPerHour').textContent = fmt$2(overheadPerHour());
+
+  // fixed/variable split
+  const fixedTotal = state.overhead.filter(o => (o.type || 'fixed') === 'fixed').reduce((s, o) => s + scaledAmount(o), 0);
+  const variableTotal = total - fixedTotal;
+  const fixedPct = total > 0 ? (fixedTotal / total * 100).toFixed(0) : 0;
+  const varPct = total > 0 ? (variableTotal / total * 100).toFixed(0) : 0;
+  document.getElementById('ohSplit').innerHTML = `${fmt$(fixedTotal)} / ${fmt$(variableTotal)}<div class="stat-sub" style="margin-top:2px;">${fixedPct}% fixed · ${varPct}% scales</div>`;
 }
 
 function captureFocus(parent) {
@@ -918,12 +982,24 @@ function restoreFocus(parent, info) {
 }
 
 function updateOverhead(i, field, val) {
-  state.overhead[i][field] = field === 'amount' ? parseFloat(val) || 0 : val;
-  document.getElementById('ohTotal').textContent = fmt$(totalOverhead());
-  document.getElementById('ohPerHour').textContent = fmt$2(overheadPerHour());
+  state.overhead[i][field] = field === 'amount' ? (parseFloat(val) || 0) : val;
+  // for type changes, do a full re-render so the scaled column updates
+  if (field === 'type') {
+    renderOverhead();
+    renderQuote();
+    renderDashboard();
+  } else {
+    // light update: recompute totals only
+    const total = totalOverhead();
+    document.getElementById('ohTotal').textContent = fmt$(total);
+    document.getElementById('ohMonthly').textContent = fmt$(total / 12);
+    document.getElementById('ohWeekly').textContent = fmt$(total / 52);
+    document.getElementById('ohDaily').textContent = fmt$(total / 260);
+    document.getElementById('ohPerHour').textContent = fmt$2(overheadPerHour());
+  }
   debouncedSave();
 }
-function addOverheadRow() { state.overhead.push({ name: 'New Cost', amount: 0 }); renderOverhead(); debouncedSave(); }
+function addOverheadRow() { state.overhead.push({ name: 'New Cost', amount: 0, type: 'fixed' }); renderOverhead(); debouncedSave(); }
 function removeOverhead(i) { state.overhead.splice(i, 1); renderOverhead(); debouncedSave(); }
 
 function bindEvents() {
@@ -934,6 +1010,14 @@ function bindEvents() {
       state.hoursPerVan = parseInt(e.target.value) || 1600;
       renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
     }
+  });
+  document.getElementById('ohBaselineVans').addEventListener('input', e => {
+    state.baselineVans = parseInt(e.target.value) || 1;
+    renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
+  });
+  document.getElementById('ohBaselinePeople').addEventListener('input', e => {
+    state.baselinePeople = parseInt(e.target.value) || 1;
+    renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
   });
 
   const acFieldMap = { acDaysWeek: 'daysWeek', acLeave: 'leave', acSick: 'sick', acPubHol: 'pubHol', acOther: 'other', acHoursDay: 'hoursDay', acDrive: 'drive', acLunch: 'lunch', acYard: 'yard', acSlow: 'slow' };
@@ -1004,12 +1088,12 @@ function updateTeam(i, field, val) {
   renderDashboard();
   debouncedSave();
 }
-function addTeamRow() { state.team.push({ name: 'New Person', role: 'Installer', payRate: 30, onCost: 25 }); renderTeam(); renderQuoteTeamPicker(); debouncedSave(); }
+function addTeamRow() { state.team.push({ name: 'New Person', role: 'Installer', payRate: 30, onCost: 25 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); debouncedSave(); }
 function removeTeam(i) {
   state.team.splice(i, 1);
   localQuote.selectedTeam = localQuote.selectedTeam.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx);
   saveLocalQuote();
-  renderTeam(); renderQuoteTeamPicker(); renderQuote(); renderDashboard(); debouncedSave();
+  renderTeam(); renderQuoteTeamPicker(); renderQuote(); renderOverhead(); renderDashboard(); debouncedSave();
 }
 
 function renderJobs() {
