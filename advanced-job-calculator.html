@@ -17,6 +17,7 @@
   --muted: #6b6357;
   --good: #1a4d3a;
   --bad: #b8351a;
+  --gold: #c9a227;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -33,7 +34,6 @@ body {
     radial-gradient(circle at 80% 90%, rgba(26,77,58,0.04) 0%, transparent 40%);
 }
 .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
-
 header {
   border-bottom: 3px solid var(--ink);
   padding-bottom: 20px;
@@ -83,7 +83,6 @@ header {
   animation: pulse 2s infinite;
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
 .tabs {
   display: flex;
   gap: 0;
@@ -108,7 +107,6 @@ header {
 .tab.active { color: var(--ink); border-bottom-color: var(--accent); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-
 .card {
   background: var(--paper-2);
   border: 1.5px solid var(--ink);
@@ -134,14 +132,12 @@ header {
   color: var(--muted);
   margin-bottom: 18px;
 }
-
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 @media (max-width: 720px) {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
 }
-
 .field { display: flex; flex-direction: column; gap: 6px; }
 label {
   font-family: 'JetBrains Mono', monospace;
@@ -162,7 +158,6 @@ input[type="text"], input[type="number"], input[type="password"], select, textar
 }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
 input[readonly] { background: var(--paper-2); cursor: not-allowed; }
-
 .btn {
   background: var(--ink);
   color: var(--paper);
@@ -180,7 +175,6 @@ input[readonly] { background: var(--paper-2); cursor: not-allowed; }
 .btn-danger { background: var(--paper); color: var(--bad); border-color: var(--bad); }
 .btn-danger:hover { background: var(--bad); color: var(--paper); }
 .btn-sm { padding: 6px 12px; font-size: 13px; }
-
 table { width: 100%; border-collapse: collapse; margin-top: 8px; }
 th {
   text-align: left;
@@ -195,7 +189,6 @@ th {
 td { padding: 10px; border-bottom: 1px dashed rgba(0,0,0,0.15); }
 td input { padding: 6px 8px; font-size: 13px; }
 .actions-cell { text-align: right; white-space: nowrap; }
-
 .stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
 .stat {
   flex: 1;
@@ -222,12 +215,10 @@ td input { padding: 6px 8px; font-size: 13px; }
 .stat-value.good { color: var(--good); }
 .stat-value.bad { color: var(--bad); }
 .stat-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 4px; }
-
 .quote-summary { background: var(--ink); color: var(--paper); padding: 28px; border: 1.5px solid var(--ink); }
 .quote-summary .stat { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); color: var(--paper); }
 .quote-summary .stat-label { color: rgba(245,241,234,0.6); }
 .quote-summary .stat-sub { color: rgba(245,241,234,0.5); }
-
 .team-pick { display: flex; flex-wrap: wrap; gap: 8px; }
 .team-chip {
   display: inline-flex;
@@ -253,7 +244,6 @@ td input { padding: 6px 8px; font-size: 13px; }
   padding: 2px 5px;
   letter-spacing: 0.08em;
 }
-
 .breakdown {
   background: var(--paper);
   border-left: 4px solid var(--accent);
@@ -264,11 +254,9 @@ td input { padding: 6px 8px; font-size: 13px; }
 }
 .breakdown .row { display: flex; justify-content: space-between; gap: 12px; }
 .breakdown .row.total { border-top: 1px solid var(--ink); margin-top: 8px; padding-top: 8px; font-weight: 600; }
-
 .slider-row { display: flex; align-items: center; gap: 12px; }
 .slider-row input[type="range"] { flex: 1; }
 .slider-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; min-width: 60px; text-align: right; }
-
 .help { font-size: 12px; color: var(--muted); margin-top: 4px; font-style: italic; }
 .alert {
   background: rgba(212,76,30,0.1);
@@ -279,7 +267,6 @@ td input { padding: 6px 8px; font-size: 13px; }
 }
 .alert.good { background: rgba(26,77,58,0.08); border-left-color: var(--good); }
 .alert.warn { background: rgba(184,53,26,0.08); border-left-color: var(--bad); }
-
 footer {
   margin-top: 48px;
   padding-top: 20px;
@@ -294,7 +281,6 @@ footer {
   flex-wrap: wrap;
   gap: 12px;
 }
-
 .toast {
   position: fixed;
   bottom: 24px;
@@ -312,9 +298,7 @@ footer {
   z-index: 1000;
 }
 .toast.show { opacity: 1; }
-
 .section-divider { height: 1px; background: var(--ink); margin: 24px 0; opacity: 0.2; }
-
 .subcard { background: var(--paper); border: 1px solid var(--ink); padding: 18px; margin-bottom: 16px; }
 .subcard-title {
   font-family: 'Bebas Neue', sans-serif;
@@ -324,7 +308,6 @@ footer {
   padding-bottom: 8px;
   border-bottom: 1px solid var(--ink);
 }
-
 .calc-flow { display: flex; flex-direction: column; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 .calc-flow .calc-row { display: flex; justify-content: space-between; padding: 4px 0; }
 .calc-flow .calc-row.minus { color: var(--bad); }
@@ -335,15 +318,236 @@ footer {
   font-weight: 600;
   font-size: 13px;
 }
-
 .hidden { display: none !important; }
+.scenario-tabs { display: flex; gap: 0; margin-bottom: 16px; }
+.scenario-tab {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-right: none;
+  padding: 10px 18px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+}
+.scenario-tab:last-child { border-right: 1.5px solid var(--ink); }
+.scenario-tab.active { background: var(--ink); color: var(--paper); }
+.scenario-tab .sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.7; display: block; margin-top: 2px; }
+.target-pill {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--accent);
+  color: var(--paper);
+  padding: 3px 8px;
+  margin-left: 8px;
+}
+.month-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(12, 1fr);
+  gap: 0;
+  margin-top: 12px;
+  font-size: 12px;
+}
+.month-grid .mg-head {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 6px 4px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+.month-grid .mg-cell {
+  border: 1px solid var(--ink);
+  border-top: none;
+  background: var(--paper);
+  padding: 0;
+}
+.month-grid .mg-cell input {
+  border: none;
+  text-align: right;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  background: transparent;
+  width: 100%;
+}
+.month-grid .mg-cell input:focus { outline: 2px solid var(--accent); }
+.month-grid .mg-rowlabel {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--ink);
+  border-top: none;
+  display: flex;
+  align-items: center;
+}
+.month-grid .mg-rowlabel.first { border-top: 1px solid var(--ink); }
+.mg-cell.actual.under { background: rgba(184, 53, 26, 0.12); }
+.mg-cell.actual.over { background: rgba(26, 77, 58, 0.12); }
+.mg-cell.target { background: var(--paper-2); color: var(--muted); }
+.mg-cell.target span { display: block; padding: 6px 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; text-align: right; }
+.pricebook-table tr.cat-service { background: rgba(26, 77, 58, 0.04); }
+.pricebook-table tr.cat-install { background: rgba(212, 76, 30, 0.04); }
+.pricebook-table tr.cat-investigation { background: rgba(201, 162, 39, 0.06); }
+.pricebook-table tr.cat-rebate { background: rgba(107, 99, 87, 0.06); }
+.pricebook-table tr.cat-maintenance { background: rgba(26, 77, 58, 0.08); }
+.cat-pill {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 0;
+  font-weight: 600;
+}
+.cat-pill.service { background: var(--accent-2); color: var(--paper); }
+.cat-pill.install { background: var(--accent); color: var(--paper); }
+.cat-pill.investigation { background: var(--gold); color: var(--ink); }
+.cat-pill.rebate { background: var(--muted); color: var(--paper); }
+.cat-pill.maintenance { background: var(--good); color: var(--paper); }
+#presentationModal {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 999;
+  display: none;
+  overflow-y: auto;
+  padding: 20px;
+}
+#presentationModal.show { display: block; }
+.presentation-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 32px;
+}
+.presentation-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--ink);
+}
+.presentation-tiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+@media (max-width: 720px) {
+  .presentation-tiers { grid-template-columns: 1fr; }
+}
+.tier {
+  border: 2px solid var(--ink);
+  padding: 0;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+}
+.tier-header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px;
+  text-align: center;
+}
+.tier-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.04em;
+}
+.tier-tagline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+.tier-body { padding: 20px; flex-grow: 1; }
+.tier-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px;
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+.tier-price-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 16px;
+}
+.tier-features { list-style: none; }
+.tier-features li {
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.15);
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.tier-features li:before {
+  content: "\2713";
+  color: var(--good);
+  font-weight: 700;
+}
+.tier-features li.cross:before {
+  content: "\2717";
+  color: var(--muted);
+  opacity: 0.5;
+}
+.tier-features li.cross { opacity: 0.5; }
+.tier.recommended { border-color: var(--accent); border-width: 3px; }
+.tier.recommended .tier-header { background: var(--accent); }
+.tier-recommended-pill {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: var(--paper);
+  color: var(--accent);
+  padding: 2px 8px;
+  margin-top: 6px;
+}
+@media print {
+  body * { visibility: hidden; }
+  #presentationModal, #presentationModal * { visibility: visible; }
+  #presentationModal {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: white; padding: 0;
+  }
+  .presentation-controls { display: none !important; }
+  .presentation-wrap {
+    border: none;
+    margin: 0;
+    max-width: none;
+    padding: 20px;
+  }
+  .tier { break-inside: avoid; }
+}
 </style>
 </head>
 <body>
-
-<!-- ============ MAIN APP ============ -->
 <div id="mainApp" class="container">
-
 <header>
   <div>
     <div class="logo">ADVANCED<span>.</span><br>JOB CALCULATOR</div>
@@ -353,23 +557,24 @@ footer {
     <div class="status-pill" id="syncStatus"><div class="status-dot"></div><span id="syncText">CONNECTING</span></div>
   </div>
 </header>
-
 <div class="tabs">
   <button class="tab active" data-tab="quote">Quote Builder</button>
+  <button class="tab" data-tab="pricebook">Pricebook</button>
+  <button class="tab" data-tab="targets">Targets</button>
   <button class="tab" data-tab="overhead">Overhead</button>
   <button class="tab" data-tab="team">Team & Rates</button>
   <button class="tab" data-tab="fleet">Fleet</button>
   <button class="tab" data-tab="jobs">Job Templates</button>
   <button class="tab" data-tab="dashboard">Dashboard</button>
 </div>
-
-<!-- QUOTE BUILDER -->
 <div class="tab-content active" id="tab-quote">
   <div class="card">
-    <div class="card-title">New Quote</div>
+    <div class="card-title">
+      New Quote
+      <button class="btn btn-sm" onclick="openPresentation()">Build Good/Better/Best →</button>
+    </div>
     <div class="card-subtitle">Quote stays private to your screen</div>
-
-    <div class="grid-2">
+    <div class="grid-3">
       <div class="field">
         <label>Pricing Mode</label>
         <select id="qPricingMode">
@@ -381,8 +586,17 @@ footer {
         <label>Job Type</label>
         <select id="qJobType"></select>
       </div>
+      <div class="field">
+        <label>Job Category <span class="help" style="margin:0;">— sets default markup</span></label>
+        <select id="qCategory">
+          <option value="service">Service / Repair (default 65%)</option>
+          <option value="install">Install (default 30%)</option>
+          <option value="investigation">Investigation / Rectification (50%)</option>
+          <option value="maintenance">Maintenance Plan (40%)</option>
+          <option value="rebate">Rebate Job (locked, 20%)</option>
+        </select>
+      </div>
     </div>
-
     <div class="grid-2" style="margin-top: 16px;">
       <div class="field">
         <label>Total Job Hours (on-site)</label>
@@ -392,20 +606,16 @@ footer {
       <div class="field" id="qFixedPriceField" style="display:none;">
         <label>Fixed Labour Price ($, ex GST, ex materials)</label>
         <input type="number" id="qFixedPrice" step="50" min="0" value="2000">
-        <div class="help">What you're charging the customer for labour. Materials added separately below.</div>
+        <div class="help">What you're charging for labour. Materials added separately below.</div>
       </div>
     </div>
-
     <div class="section-divider"></div>
-
     <div class="field">
       <label>Who's on the job? (click to select crew)</label>
       <div class="team-pick" id="qTeamPicker"></div>
       <div class="help">Selection determines your true labour cost</div>
     </div>
-
     <div class="section-divider"></div>
-
     <div class="grid-3">
       <div class="field" id="qHourlyRateField">
         <label>Crew Charge-Out Rate ($/hr total)</label>
@@ -417,13 +627,11 @@ footer {
         <input type="number" id="qMaterials" step="1" value="0">
       </div>
       <div class="field">
-        <label>Materials Markup (%)</label>
+        <label>Materials Markup (%) <span class="help" style="margin:0;">auto-set by category — override OK</span></label>
         <input type="number" id="qMarkup" step="1" value="30">
       </div>
     </div>
-
     <div class="section-divider"></div>
-
     <div class="field" id="qHourlySliderField">
       <label>What if I charged more or less per hour?</label>
       <div class="slider-row">
@@ -432,7 +640,6 @@ footer {
       </div>
       <div class="help">Drag to see how the margin changes</div>
     </div>
-
     <div class="field" id="qFixedSliderField" style="display:none;">
       <label>What if the fixed price was different?</label>
       <div class="slider-row">
@@ -442,7 +649,6 @@ footer {
       <div class="help">Drag to test different fixed-price points</div>
     </div>
   </div>
-
   <div class="quote-summary">
     <div class="card-title" style="color: var(--paper);">Quote Result</div>
     <div class="card-subtitle" style="color: rgba(245,241,234,0.6);">Live calculation</div>
@@ -464,12 +670,11 @@ footer {
         <div class="stat-value" id="rGst">$0</div>
       </div>
     </div>
-
     <div class="stat-row" style="margin-top: 12px;" id="rImpliedRow">
       <div class="stat">
         <div class="stat-label" id="rImpliedLabel">Implied Hourly Rate</div>
         <div class="stat-value" id="rImplied">$0</div>
-        <div class="stat-sub" id="rImpliedSub">Effective $/hr based on labour portion of quote</div>
+        <div class="stat-sub" id="rImpliedSub">Effective $/hr based on labour portion</div>
       </div>
       <div class="stat">
         <div class="stat-label">vs Standard $180/hr</div>
@@ -477,19 +682,207 @@ footer {
         <div class="stat-sub" id="rVsStandardSub">Difference per hour</div>
       </div>
     </div>
-
     <div style="margin-top: 20px;">
       <div class="breakdown" id="rBreakdown" style="background: rgba(255,255,255,0.05); color: var(--paper); border-left-color: var(--accent);"></div>
     </div>
   </div>
 </div>
 
-<!-- OVERHEAD -->
+<div class="tab-content" id="tab-pricebook">
+  <div class="card">
+    <div class="card-title">
+      Pricebook
+      <button class="btn btn-sm btn-secondary" onclick="addPricebookItem()">+ Add Job</button>
+    </div>
+    <div class="card-subtitle">Target prices for standard jobs · Live-priced from labour + materials + margin</div>
+    <div class="alert">
+      <strong>How it works:</strong> Each job has a category (which sets default markup), labour hours, materials cost, and a target net margin. The price is calculated to hit the target margin. Adjust any input and the Target Price updates live. Use these as the baseline in your ServiceTitan pricebook or as a sanity check before quoting.
+    </div>
+    <table class="pricebook-table">
+      <thead>
+        <tr>
+          <th style="min-width:240px;">Job Name</th>
+          <th style="width:120px;">Category</th>
+          <th style="width:80px;">Hours</th>
+          <th style="width:110px;">Materials Cost</th>
+          <th style="width:90px;">Markup %</th>
+          <th style="width:90px;">Target Margin</th>
+          <th style="width:120px;">Target Price (ex GST)</th>
+          <th style="width:60px;"></th>
+        </tr>
+      </thead>
+      <tbody id="pricebookTable"></tbody>
+    </table>
+    <div class="stat-row" style="margin-top: 20px;">
+      <div class="stat">
+        <div class="stat-label">Avg Service Ticket</div>
+        <div class="stat-value" id="pbAvgService">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg Install Ticket</div>
+        <div class="stat-value" id="pbAvgInstall">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg Investigation</div>
+        <div class="stat-value" id="pbAvgInvestigation">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Items</div>
+        <div class="stat-value accent" id="pbTotalItems">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Category Markup Defaults</div>
+    <div class="card-subtitle">Change once — all matching jobs reprice automatically</div>
+    <div class="grid-3">
+      <div class="field">
+        <label>Service / Repair markup %</label>
+        <input type="number" id="cmService" step="5" min="0" max="200" value="65">
+        <div class="help">Customers don't price-shop on a $400 fix</div>
+      </div>
+      <div class="field">
+        <label>Install markup %</label>
+        <input type="number" id="cmInstall" step="5" min="0" max="200" value="30">
+        <div class="help">Where the price-shopping bites</div>
+      </div>
+      <div class="field">
+        <label>Investigation/Rectification %</label>
+        <input type="number" id="cmInvestigation" step="5" min="0" max="200" value="50">
+        <div class="help">Customer's already in pain</div>
+      </div>
+      <div class="field">
+        <label>Maintenance Plan %</label>
+        <input type="number" id="cmMaintenance" step="5" min="0" max="200" value="40">
+        <div class="help">Member preferred pricing</div>
+      </div>
+      <div class="field">
+        <label>Rebate Job markup %</label>
+        <input type="number" id="cmRebate" step="5" min="0" max="200" value="20">
+        <div class="help">Locked margin on rebate work</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="tab-targets">
+  <div class="card">
+    <div class="card-title">Revenue Targets</div>
+    <div class="card-subtitle">Daily / weekly / monthly revenue needed to hit the year</div>
+    <div class="scenario-tabs">
+      <div class="scenario-tab active" data-scenario="current">CURRENT<span class="sub">$1.76M baseline</span></div>
+      <div class="scenario-tab" data-scenario="year1">YEAR 1<span class="sub">$3M @ 18% net</span></div>
+      <div class="scenario-tab" data-scenario="year2">YEAR 2<span class="sub">$5M @ 20% net</span></div>
+      <div class="scenario-tab" data-scenario="year3">YEAR 3<span class="sub">$7M stretch</span></div>
+    </div>
+    <div class="grid-3" style="margin-bottom: 16px;">
+      <div class="field">
+        <label>Annual Revenue Target</label>
+        <input type="number" id="tgtAnnual" step="50000">
+      </div>
+      <div class="field">
+        <label>Active Crews</label>
+        <input type="number" id="tgtCrews" step="1" min="1" max="10">
+      </div>
+      <div class="field">
+        <label>Working Days / Year</label>
+        <input type="number" id="tgtWorkingDays" step="1" min="200" max="280" value="240">
+        <div class="help">48 weeks × 5 days = 240 (excl. shutdown)</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-label">Monthly Revenue (company)</div>
+        <div class="stat-value" id="tgtMonthly">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Weekly Revenue (company)</div>
+        <div class="stat-value" id="tgtWeekly">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Daily Revenue (company)</div>
+        <div class="stat-value accent" id="tgtDaily">$0</div>
+      </div>
+    </div>
+    <div class="stat-row" style="margin-top: 16px;">
+      <div class="stat">
+        <div class="stat-label">Per Crew / Week</div>
+        <div class="stat-value" id="tgtPerCrewWeek">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Per Crew / Day</div>
+        <div class="stat-value accent" id="tgtPerCrewDay">$0</div>
+        <div class="stat-sub">← Pin this on the wall</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Per Crew / Hour (8hr × 60% util)</div>
+        <div class="stat-value" id="tgtPerCrewHour">$0</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">What a Day Looks Like — Per Crew</div>
+    <div class="card-subtitle">Daily $ target translated into job counts</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Job mix</th>
+          <th style="width:120px;">Avg ticket</th>
+          <th style="width:130px;">Jobs/day per crew</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="dayJobsTable"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Monthly Tracker — Actual vs Target</div>
+    <div class="card-subtitle">Enter actual revenue each month · Synced</div>
+    <div class="grid-2" style="margin-bottom: 16px;">
+      <div class="field">
+        <label>Tracking Year</label>
+        <select id="trackerYear">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tracking Against</label>
+        <select id="trackerScenario">
+          <option value="current">Current ($1.76M baseline)</option>
+          <option value="year1" selected>Year 1 ($3M target)</option>
+          <option value="year2">Year 2 ($5M target)</option>
+        </select>
+      </div>
+    </div>
+    <div class="month-grid" id="monthGrid"></div>
+    <div class="stat-row" style="margin-top: 20px;">
+      <div class="stat">
+        <div class="stat-label">YTD Actual</div>
+        <div class="stat-value" id="ytdActual">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">YTD Target</div>
+        <div class="stat-value" id="ytdTarget">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">YTD Variance</div>
+        <div class="stat-value" id="ytdVariance">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">On Track?</div>
+        <div class="stat-value" id="ytdOnTrack">—</div>
+      </div>
+    </div>
+    <div class="alert good" style="margin-top: 16px;">
+      <strong>How to use:</strong> Enter your actual monthly revenue in the Actual row. Targets in the grey row come from your scenario selection. Cells turn red if you're under target, green if over. Pull actuals from Xero monthly. This is your single source of truth for "are we hitting the plan?"
+    </div>
+  </div>
+</div>
 <div class="tab-content" id="tab-overhead">
   <div class="card">
     <div class="card-title">Fleet & Billable Hours Calculator</div>
     <div class="card-subtitle">Auto-calculate realistic billable capacity · Synced</div>
-
     <div class="grid-3">
       <div class="field">
         <label>Number of Vans (currently running)</label>
@@ -507,11 +900,9 @@ footer {
         <input type="number" id="ohHoursPerVan" min="500" max="2200" step="10" value="1600">
       </div>
     </div>
-
     <div id="autoCalcSection">
       <div class="subcard" style="margin-top: 20px;">
         <div class="subcard-title">↳ Auto-Calc Inputs · Tweak any number to see impact</div>
-
         <div class="grid-3">
           <div class="field"><label>Working days per week</label><input type="number" id="acDaysWeek" step="0.5" min="3" max="7" value="5"></div>
           <div class="field"><label>Annual leave (days)</label><input type="number" id="acLeave" step="1" min="0" value="20"></div>
@@ -533,37 +924,27 @@ footer {
         </div>
       </div>
     </div>
-
     <div class="stat-row" style="margin-top: 20px;">
       <div class="stat"><div class="stat-label">Total Billable Capacity</div><div class="stat-value accent" id="ohCapacity">0</div><div class="stat-sub">hours per year (all vans)</div></div>
       <div class="stat"><div class="stat-label">Per Van / Year</div><div class="stat-value" id="ohPerVan">0</div><div class="stat-sub">hours</div></div>
       <div class="stat"><div class="stat-label">Utilization</div><div class="stat-value" id="ohUtil">0%</div><div class="stat-sub">vs 8hr × 5d × 52w</div></div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">Annual Overhead Costs <button class="btn btn-sm btn-secondary" onclick="addOverheadRow()">+ Add Cost</button></div>
     <div class="card-subtitle">12-month figures · Costs scale automatically with vans / people</div>
-
     <table id="overheadTable">
       <thead><tr><th>Description</th><th style="width:140px;">Type</th><th style="width:140px;">Cost ($)<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">per unit / per year</div></th><th style="width:140px;">× Count<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">multiplier</div></th><th style="width:130px;">Annual Total ($)</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
-
     <div class="alert" style="margin-top: 16px;">
       <strong>How this works:</strong> For <em>Fixed</em> items, enter the annual total. For <em>Per Van</em> or <em>Per Person</em> items, enter the cost FOR ONE van or ONE person — the calculator multiplies by your current count.
-      <br><br>
-      <strong>Example:</strong> If one van costs $9,000/year in fuel, type 9000 and select "Per Van". With 4 vans, total = $36,000. With 5 vans, $45,000.
-      <br><br>
-      <strong>Type guide:</strong> <em>Fixed</em> — same regardless of vans/staff. <em>Per Van</em> — multiplied by van count. <em>Per Person</em> — multiplied by team count.
     </div>
-
     <div class="stat-row" style="margin-top: 16px;">
       <div class="stat"><div class="stat-label">Total Annual Overhead</div><div class="stat-value accent" id="ohTotal">$0</div><div class="stat-sub">at current van/staff levels</div></div>
       <div class="stat"><div class="stat-label">Per Month</div><div class="stat-value" id="ohMonthly">$0</div></div>
       <div class="stat"><div class="stat-label">Per Week</div><div class="stat-value" id="ohWeekly">$0</div></div>
     </div>
-
     <div class="stat-row" style="margin-top: 16px;">
       <div class="stat"><div class="stat-label">Per Day (5-day week)</div><div class="stat-value" id="ohDaily">$0</div></div>
       <div class="stat"><div class="stat-label">Overhead per Billable Hour</div><div class="stat-value accent" id="ohPerHour">$0</div><div class="stat-sub">Recovered on every billed hour</div></div>
@@ -572,51 +953,40 @@ footer {
   </div>
 </div>
 
-<!-- TEAM -->
 <div class="tab-content" id="tab-team">
   <div class="card">
     <div class="card-title">Directors <button class="btn btn-sm btn-secondary" onclick="addDirectorRow()">+ Add Director</button></div>
     <div class="card-subtitle">Paid an annual wage · Selectable in quotes at calculated hourly cost</div>
-
     <table id="directorsTable">
       <thead><tr><th>Name</th><th>Role</th><th style="width:140px;">Annual Wages ($)</th><th style="width:110px;">Billable %</th><th style="width:160px;">Effective $/hr<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">used in quotes</div></th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
-
-    <div class="alert" style="margin-top: 16px; font-size: 12px;"><strong>How directors work:</strong> Enter total annual wages (incl. super if applicable). Billable % determines how much is recovered through job pricing vs. flowing to overhead. Effective $/hr = (annual wages × billable%) ÷ billable hours/year — used as the cost when this person is selected on a quote.</div>
+    <div class="alert" style="margin-top: 16px; font-size: 12px;"><strong>How directors work:</strong> Enter total annual wages (incl. super if applicable). Billable % determines how much is recovered through job pricing vs. flowing to overhead.</div>
   </div>
-
   <div class="card">
     <div class="card-title">Installers & Apprentices <button class="btn btn-sm btn-secondary" onclick="addTeamRow()">+ Add Person</button></div>
     <div class="card-subtitle">Hourly staff · True cost = pay rate × (1 + on-cost%)</div>
-
     <table id="teamTable">
       <thead><tr><th>Name</th><th>Role</th><th style="width:90px;">Pay $/hr</th><th style="width:80px;">On-Cost %</th><th style="width:90px;">Billable %</th><th style="width:90px;">School Days/yr<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">TAFE / training</div></th><th style="width:110px;">Govt Subsidy<div style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">$/yr (if any)</div></th><th style="width:110px;">True Cost $/hr</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
-
-    <div class="alert good" style="margin-top: 20px; font-size: 12px;"><strong>Billable %:</strong> 100 = full-time on the tools. 70 = 3.5 days/week billable. Non-billable portion of wages flows into overhead automatically. <strong>School Days/yr:</strong> any TAFE, training, certifications, license renewals — paid days they're not on the tools. Reduces billable capacity AND adds wages to overhead. Set 0 if they don't go to school. <strong>Govt Subsidy:</strong> any annual government incentive received for this person (apprentice scheme, training subsidies). Offsets overhead. <strong>On-cost:</strong> covers super, workcover, leave loading. <strong>Role "Apprentice":</strong> tags them with the orange APP pill in the quote builder.</div>
+    <div class="alert good" style="margin-top: 20px; font-size: 12px;"><strong>Billable %:</strong> 100 = full-time on the tools. 70 = 3.5 days/week billable. Non-billable portion of wages flows into overhead automatically.</div>
   </div>
-
   <div class="card">
     <div class="card-title">Office / Admin Staff <button class="btn btn-sm btn-secondary" onclick="addAdminRow()">+ Add Admin</button></div>
     <div class="card-subtitle">Non-billable staff · Wages flow directly into overhead</div>
-
     <table id="adminTable">
       <thead><tr><th>Name</th><th>Role</th><th style="width:100px;">Pay $/hr</th><th style="width:100px;">On-Cost %</th><th style="width:160px;">Annual Cost</th><th style="width:60px;"></th></tr></thead>
       <tbody></tbody>
     </table>
-
-    <div class="alert" style="margin-top: 16px; font-size: 12px;"><strong>For 3-day-a-week staff:</strong> include "(3 days)" in their role description and the calculator uses 3/5 FTE for annual cost. Same for "(4 days)" or "(2 days)".</div>
+    <div class="alert" style="margin-top: 16px; font-size: 12px;"><strong>For 3-day-a-week staff:</strong> include "(3 days)" in their role description and the calculator uses 3/5 FTE for annual cost.</div>
   </div>
 </div>
 
-<!-- FLEET -->
 <div class="tab-content" id="tab-fleet">
   <div class="card">
     <div class="card-title">Fleet Register <button class="btn btn-sm btn-secondary" onclick="addVehicle()">+ Add Vehicle</button></div>
     <div class="card-subtitle">Track each van/vehicle · Depreciation auto-flows into overhead</div>
-
     <table id="fleetTable">
       <thead><tr>
         <th style="min-width:160px;">Make / Model</th>
@@ -632,30 +1002,23 @@ footer {
       </tr></thead>
       <tbody></tbody>
     </table>
-
     <div class="stat-row" style="margin-top: 20px;">
-      <div class="stat"><div class="stat-label">Active Vehicles</div><div class="stat-value accent" id="fleetActiveCount">0</div><div class="stat-sub">Drives the "vans" count for overhead</div></div>
-      <div class="stat"><div class="stat-label">Total Fleet Value</div><div class="stat-value" id="fleetTotalValue">$0</div><div class="stat-sub">Sum of purchase prices</div></div>
-      <div class="stat"><div class="stat-label">Total Owing</div><div class="stat-value bad" id="fleetTotalOwing">$0</div><div class="stat-sub">Loan balances</div></div>
+      <div class="stat"><div class="stat-label">Active Vehicles</div><div class="stat-value accent" id="fleetActiveCount">0</div></div>
+      <div class="stat"><div class="stat-label">Total Fleet Value</div><div class="stat-value" id="fleetTotalValue">$0</div></div>
+      <div class="stat"><div class="stat-label">Total Owing</div><div class="stat-value bad" id="fleetTotalOwing">$0</div></div>
     </div>
-
     <div class="stat-row" style="margin-top: 16px;">
-      <div class="stat"><div class="stat-label">Total Equity</div><div class="stat-value" id="fleetTotalEquity">$0</div><div class="stat-sub">Value minus loans</div></div>
-      <div class="stat"><div class="stat-label">Annual Depreciation</div><div class="stat-value accent" id="fleetTotalDep">$0</div><div class="stat-sub">Auto-flows into overhead</div></div>
-      <div class="stat"><div class="stat-label">Per-Van Annual Dep.</div><div class="stat-value" id="fleetDepPerVan">$0</div><div class="stat-sub">Average across active fleet</div></div>
-    </div>
-
-    <div class="alert" style="margin-top: 20px;">
-      <strong>How this works:</strong> Each vehicle has a useful life (years). Annual depreciation = Bought For ÷ Life. The total flows into the Overhead tab automatically as a single "Fleet Depreciation" line — you don't enter it manually anymore.<br><br>
-      <strong>Status — Active</strong>: counts as a working van and contributes its share of fuel/maintenance/insurance overhead. <strong>In Repair</strong>: doesn't count as a working van but still depreciates. <strong>Sold</strong>: removed from all calcs (just kept in the list for record-keeping).
+      <div class="stat"><div class="stat-label">Total Equity</div><div class="stat-value" id="fleetTotalEquity">$0</div></div>
+      <div class="stat"><div class="stat-label">Annual Depreciation</div><div class="stat-value accent" id="fleetTotalDep">$0</div></div>
+      <div class="stat"><div class="stat-label">Per-Van Annual Dep.</div><div class="stat-value" id="fleetDepPerVan">$0</div></div>
     </div>
   </div>
 </div>
+
 <div class="tab-content" id="tab-jobs">
   <div class="card">
     <div class="card-title">Job Templates <button class="btn btn-sm btn-secondary" onclick="addJobRow()">+ Add Job</button></div>
     <div class="card-subtitle">Standard times · Synced across users</div>
-
     <table id="jobsTable">
       <thead><tr><th>Job Name</th><th style="width:140px;">Hours (on-site)</th><th style="width:160px;">Default Crew</th><th style="width:120px;">Notes</th><th style="width:80px;"></th></tr></thead>
       <tbody></tbody>
@@ -663,31 +1026,26 @@ footer {
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="tab-content" id="tab-dashboard">
   <div class="card">
     <div class="card-title">The Numbers · At a Glance</div>
     <div class="card-subtitle">What your business needs to break even and profit</div>
-
     <div class="stat-row">
       <div class="stat"><div class="stat-label">Annual Overhead</div><div class="stat-value" id="dOverhead">$0</div></div>
       <div class="stat"><div class="stat-label">Billable Capacity</div><div class="stat-value" id="dCapacity">0 hrs</div></div>
       <div class="stat"><div class="stat-label">Overhead per Hour</div><div class="stat-value accent" id="dOhPerHour">$0</div></div>
     </div>
-
     <div class="stat-row" style="margin-top: 16px;">
       <div class="stat"><div class="stat-label">Avg Crew Cost (1 installer)</div><div class="stat-value" id="dAvgInstaller">$0</div></div>
       <div class="stat"><div class="stat-label">Avg Crew Cost (installer + apprentice)</div><div class="stat-value" id="dAvgPair">$0</div></div>
-      <div class="stat"><div class="stat-label">Break-Even Crew Rate (pair)</div><div class="stat-value good" id="dBreakeven">$0</div><div class="stat-sub">Min crew rate per hour to break even</div></div>
+      <div class="stat"><div class="stat-label">Break-Even Crew Rate (pair)</div><div class="stat-value good" id="dBreakeven">$0</div></div>
     </div>
-
     <div class="stat-row" style="margin-top: 16px;">
       <div class="stat"><div class="stat-label">Margin @ $180 (solo)</div><div class="stat-value" id="dMargin180Solo">0%</div></div>
       <div class="stat"><div class="stat-label">Margin @ $180 (installer + apprentice)</div><div class="stat-value" id="dMargin180Pair">0%</div></div>
-      <div class="stat"><div class="stat-label">Annual Profit @ Full Capacity</div><div class="stat-value" id="dAnnualProfit">$0</div><div class="stat-sub">If every hour billed at $180 (50/50 mix)</div></div>
+      <div class="stat"><div class="stat-label">Annual Profit @ Full Capacity</div><div class="stat-value" id="dAnnualProfit">$0</div></div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">What-If: Fleet Scenarios</div>
     <div class="card-subtitle">Break-even at different van counts</div>
@@ -696,7 +1054,6 @@ footer {
       <tbody id="scenarioTable"></tbody>
     </table>
   </div>
-
   <div class="card">
     <div class="card-title">Settings</div>
     <div class="card-subtitle">Backup, restore, reset</div>
@@ -706,7 +1063,7 @@ footer {
       <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
       <button class="btn btn-danger" onclick="resetAll()">Reset to Defaults</button>
     </div>
-    <div class="help" style="margin-top: 12px;">All shared data (overhead, team, jobs) syncs to Supabase. Your current quote stays in your browser.</div>
+    <div class="help" style="margin-top: 12px;">All shared data syncs to Supabase. Your current quote stays in your browser.</div>
   </div>
 </div>
 
@@ -714,49 +1071,71 @@ footer {
   <div>Advanced Gas & Air Conditioning Services Pty Ltd</div>
   <div id="lastSaved">Last saved: never</div>
 </footer>
+</div>
 
+<div id="presentationModal">
+  <div class="presentation-wrap">
+    <div class="presentation-controls">
+      <div>
+        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.04em;">Customer Options</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);">Hand this to the customer · Always present 3</div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary" onclick="window.print()">Print</button>
+        <button class="btn btn-secondary" onclick="closePresentation()">Close</button>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-bottom: 20px;">
+      <div class="field">
+        <label>Customer name</label>
+        <input type="text" id="presCustomer" placeholder="Mr & Mrs Smith">
+      </div>
+      <div class="field">
+        <label>Address / Job ref</label>
+        <input type="text" id="presAddress" placeholder="123 Smith St, Pakenham">
+      </div>
+    </div>
+    <div class="presentation-tiers" id="presentationTiers"></div>
+    <div style="margin-top: 24px; padding: 16px; background: var(--paper-2); border-left: 4px solid var(--accent); font-size: 12px;">
+      <strong>How this works:</strong> Three tiers from the same job. The middle option is recommended. Customers love a choice — they go from "should I do this?" to "which one should I pick?". Print and hand over, or read off the screen at the kitchen table.
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script>
-// ============================================================
-//  PASTE YOUR SUPABASE KEYS HERE — only place you need to edit
-// ============================================================
-const SUPABASE_URL  = 'https://pfvibwgusbfnjopqiszg.supabase.co';   // e.g. 'https://abcdefgh.supabase.co'
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdmlid2d1c2JmbmpvcHFpc3pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTM4MDQsImV4cCI6MjA5MzA2OTgwNH0.hmU22AkVspxQLt1VbuGjgFGjXt3rzfjJlL8i6wF95rs';       // long string starting with 'eyJ...'
-// ============================================================
+const SUPABASE_URL = 'https://pfvibwgusbfnjopqiszg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdmlid2d1c2JmbmpvcHFpc3pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTM4MDQsImV4cCI6MjA5MzA2OTgwNH0.hmU22AkVspxQLt1VbuGjgFGjXt3rzfjJlL8i6wF95rs';
 
 let db = null;
 let saveTimeout = null;
 let isLoadingFromCloud = false;
+let monthlyActuals = {};
 
 const DEFAULT_STATE = {
   vans: 3,
   hoursPerVan: 1600,
   autoCalc: 'auto',
   ac: { daysWeek: 5, leave: 20, sick: 10, pubHol: 11, other: 5, hoursDay: 8, drive: 1, lunch: 0.5, yard: 0.5, slow: 8 },
-  baselineVans: 4,
-  baselinePeople: 6,
   overhead: [
-    { name: "Motor Vehicle - Fuel", amount: 9634, type: "per_van" },
-    { name: "Motor Vehicle - Insurance & Rego", amount: 3318, type: "per_van" },
-    { name: "Motor Vehicle - Maintenance & Repairs", amount: 4091, type: "per_van" },
-    { name: "Motor Vehicle - Tolls & Parking", amount: 233, type: "per_van" },
+    { name: "Motor Vehicle - Fuel", amount: 11749, type: "per_van" },
+    { name: "Motor Vehicle - Insurance & Rego", amount: 5035, type: "per_van" },
+    { name: "Motor Vehicle - Maintenance & Repairs", amount: 5715, type: "per_van" },
+    { name: "Motor Vehicle - Tolls & Parking", amount: 311, type: "per_van" },
     { name: "Rent", amount: 37917, type: "fixed" },
     { name: "Body Corporate Fees", amount: 2648, type: "fixed" },
     { name: "Rates & Utilities", amount: 6530, type: "fixed" },
     { name: "Insurance (Public Liability etc)", amount: 15061, type: "fixed" },
     { name: "Workcover", amount: 2322, type: "per_person" },
     { name: "Long Service Leave", amount: 522, type: "per_person" },
-    { name: "Accounting Fees", amount: 5412, type: "fixed" },
-    { name: "Bank Fees", amount: 13355, type: "fixed" },
+    { name: "Accounting Fees", amount: 5039, type: "fixed" },
+    { name: "Bank Fees", amount: 13356, type: "fixed" },
     { name: "Interest Expense", amount: 22480, type: "fixed" },
-    { name: "Subscriptions (Xero, software)", amount: 19849, type: "fixed" },
+    { name: "Subscriptions (Xero, ServiceTitan, software)", amount: 22000, type: "fixed" },
     { name: "Telephone & Internet", amount: 11770, type: "fixed" },
     { name: "Office Expenses", amount: 5374, type: "fixed" },
     { name: "Printing & Stationery", amount: 504, type: "fixed" },
-    { name: "Cleaning / Rubbish Removal", amount: 11008, type: "fixed" },
+    { name: "Cleaning / Rubbish Removal", amount: 10347, type: "fixed" },
     { name: "Tools (consumed/replaced)", amount: 380, type: "per_person" },
     { name: "Protective Clothing & Uniforms", amount: 360, type: "per_person" },
     { name: "Staff Training - Course Fees & Licences", amount: 1377, type: "per_person" },
@@ -774,13 +1153,13 @@ const DEFAULT_STATE = {
     { name: "General Expenses", amount: 539, type: "fixed" }
   ],
   team: [
-    { name: "Dean Winbanks", role: "Director/Lead", isDirector: true, annualWages: 130000, billablePct: 90 },
+    { name: "Dean Winbanks", role: "Director/Lead", isDirector: true, annualWages: 118470, billablePct: 90 },
     { name: "Jye Stephens", role: "Installer", payRate: 48, onCost: 25, billablePct: 100 },
-    { name: "Jake Deppeler", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 70 },
+    { name: "Jake Deppeler", role: "Installer/Estimator", payRate: 44, onCost: 25, billablePct: 60 },
     { name: "Jackson Lane", role: "Installer", payRate: 35, onCost: 25, billablePct: 100 },
     { name: "Chaz Stephens", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100, schoolDays: 40, apprenticeSubsidy: 5327 },
     { name: "Paddy Fairclough", role: "Apprentice", payRate: 28, onCost: 20, billablePct: 100, schoolDays: 40, apprenticeSubsidy: 5327 },
-    { name: "Kellie Winbanks", role: "Director (Office Admin)", isDirector: true, annualWages: 73000, billablePct: 0 },
+    { name: "Kellie Winbanks", role: "Director (Office Admin)", isDirector: true, annualWages: 60000, billablePct: 0 },
     { name: "Natasha (Tash) Hahir", role: "Office Admin (3 days)", payRate: 32, onCost: 25, billablePct: 0 }
   ],
   fleet: [
@@ -794,15 +1173,54 @@ const DEFAULT_STATE = {
     { name: "Heater Changeover (gas ducted)", hours: 4, defaultCrew: "1 installer + 1 apprentice", notes: "" },
     { name: "Hydronic Heat Pump Install", hours: 2, defaultCrew: "1 installer + 1 apprentice", notes: "" },
     { name: "Split System Aircon Install", hours: 4, defaultCrew: "1 installer + 1 apprentice", notes: "" },
-    { name: "Ducted Split Install", hours: 24, defaultCrew: "1 installer + 1 apprentice", notes: "3 days × 8 hrs" },
+    { name: "Ducted Split Install", hours: 24, defaultCrew: "1 installer + 1 apprentice", notes: "3 days" },
     { name: "Service Call", hours: 1, defaultCrew: "1 installer", notes: "" }
-  ]
+  ],
+  pricebook: [
+    { name: "Service call — diagnostic only", category: "service", hours: 1, materials: 0, markup: null, marginPct: 0.18 },
+    { name: "Service call — minor fix (gas top-up, capacitor)", category: "service", hours: 1.5, materials: 80, markup: null, marginPct: 0.18 },
+    { name: "Service call — major repair (compressor, board)", category: "service", hours: 3, materials: 600, markup: null, marginPct: 0.18 },
+    { name: "Annual maintenance — single split", category: "maintenance", hours: 1, materials: 30, markup: null, marginPct: 0.18 },
+    { name: "Annual maintenance — ducted system", category: "maintenance", hours: 2, materials: 60, markup: null, marginPct: 0.18 },
+    { name: "Maintenance plan visit (member rate)", category: "maintenance", hours: 1, materials: 30, markup: null, marginPct: 0.15 },
+    { name: "Gas safety check + compliance certificate", category: "service", hours: 1.5, materials: 50, markup: null, marginPct: 0.18 },
+    { name: "Investigation — gas leak", category: "investigation", hours: 2, materials: 80, markup: null, marginPct: 0.18 },
+    { name: "Investigation — system fault", category: "investigation", hours: 2.5, materials: 100, markup: null, marginPct: 0.18 },
+    { name: "Rectification — minor", category: "investigation", hours: 2, materials: 200, markup: null, marginPct: 0.18 },
+    { name: "Rectification — major", category: "investigation", hours: 5, materials: 800, markup: null, marginPct: 0.18 },
+    { name: "Split system supply + install (2.5kW)", category: "install", hours: 5, materials: 950, markup: null, marginPct: 0.18 },
+    { name: "Split system supply + install (5kW)", category: "install", hours: 6, materials: 1450, markup: null, marginPct: 0.18 },
+    { name: "Split system supply + install (7.1kW)", category: "install", hours: 7, materials: 1850, markup: null, marginPct: 0.18 },
+    { name: "Multi-head split (2 head)", category: "install", hours: 10, materials: 3200, markup: null, marginPct: 0.18 },
+    { name: "Multi-head split (3 head)", category: "install", hours: 14, materials: 4600, markup: null, marginPct: 0.18 },
+    { name: "Ducted system — 4 zone, single storey", category: "install", hours: 32, materials: 7200, markup: null, marginPct: 0.18 },
+    { name: "Ducted system — 6 zone, single storey", category: "install", hours: 40, materials: 9500, markup: null, marginPct: 0.18 },
+    { name: "Ducted system — 6 zone, double storey", category: "install", hours: 50, materials: 11500, markup: null, marginPct: 0.18 },
+    { name: "Gas heater swap-out (existing flue)", category: "install", hours: 5, materials: 1800, markup: null, marginPct: 0.18 },
+    { name: "Gas heater new install", category: "install", hours: 8, materials: 2400, markup: null, marginPct: 0.18 },
+    { name: "Evap cooling — replacement", category: "install", hours: 8, materials: 2800, markup: null, marginPct: 0.18 },
+    { name: "Evap cooling — new install", category: "install", hours: 14, materials: 4200, markup: null, marginPct: 0.18 },
+    { name: "Hydronic radiator install (per radiator)", category: "install", hours: 4, materials: 600, markup: null, marginPct: 0.18 },
+    { name: "Rebate — split system (Solar Vic)", category: "rebate", hours: 5, materials: 1300, markup: null, marginPct: 0.15 },
+    { name: "Rebate — ducted gas removal", category: "rebate", hours: 16, materials: 4500, markup: null, marginPct: 0.15 },
+    { name: "Rebate — heat pump hot water", category: "rebate", hours: 4, materials: 1800, markup: null, marginPct: 0.15 }
+  ],
+  categoryMarkup: { service: 65, install: 30, investigation: 50, maintenance: 40, rebate: 20 },
+  yearTargets: {
+    current: { label: "Current", annual: 1762521, crews: 3, netPct: 0 },
+    year1: { label: "Year 1", annual: 3000000, crews: 4, netPct: 0.18 },
+    year2: { label: "Year 2", annual: 5000000, crews: 5, netPct: 0.20 },
+    year3: { label: "Year 3", annual: 7000000, crews: 6, netPct: 0.20 }
+  }
 };
 
-// quote stays local
-const LOCAL_QUOTE_KEY = 'advancedJobCalc_quote_v1';
+const LOCAL_QUOTE_KEY = 'advancedJobCalc_quote_v2';
 let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-let localQuote = { jobIdx: 0, hours: 4, selectedTeam: [], chargeRate: 180, materials: 0, markup: 30, pricingMode: 'hourly', fixedPrice: 2000 };
+let localQuote = {
+  jobIdx: 0, hours: 4, selectedTeam: [], chargeRate: 180, materials: 0, markup: 30,
+  pricingMode: 'hourly', fixedPrice: 2000, category: 'install'
+};
+let activeScenario = 'current';
 
 function loadLocalQuote() {
   try {
@@ -831,15 +1249,15 @@ async function loadFromCloud() {
       isLoadingFromCloud = true;
       state = { ...DEFAULT_STATE, ...data.data };
       state.ac = { ...DEFAULT_STATE.ac, ...(data.data.ac || {}) };
-      // migrate: items without 'type' get inherited from defaults by name match, fallback to 'fixed'
       if (state.overhead) {
         const defaultTypeByName = {};
         DEFAULT_STATE.overhead.forEach(d => { defaultTypeByName[d.name] = d.type; });
         state.overhead = state.overhead.map(o => o.type ? o : { ...o, type: defaultTypeByName[o.name] || 'fixed' });
       }
-      if (!state.baselineVans) state.baselineVans = DEFAULT_STATE.baselineVans;
-      if (!state.baselinePeople) state.baselinePeople = DEFAULT_STATE.baselinePeople;
       if (!state.fleet || !Array.isArray(state.fleet)) state.fleet = JSON.parse(JSON.stringify(DEFAULT_STATE.fleet));
+      if (!state.pricebook || !Array.isArray(state.pricebook)) state.pricebook = JSON.parse(JSON.stringify(DEFAULT_STATE.pricebook));
+      if (!state.categoryMarkup) state.categoryMarkup = JSON.parse(JSON.stringify(DEFAULT_STATE.categoryMarkup));
+      if (!state.yearTargets) state.yearTargets = JSON.parse(JSON.stringify(DEFAULT_STATE.yearTargets));
       isLoadingFromCloud = false;
     }
     setSyncStatus('synced', 'SYNCED');
@@ -864,31 +1282,62 @@ async function saveToCloud() {
   }
 }
 
+async function loadMonthlyActuals() {
+  if (!db) return;
+  try {
+    const { data, error } = await db.from('monthly_actuals').select('*');
+    if (error) throw error;
+    monthlyActuals = {};
+    (data || []).forEach(row => {
+      monthlyActuals[`${row.year}-${row.month}`] = row;
+    });
+  } catch (e) {
+    console.error('Could not load monthly actuals:', e);
+  }
+}
+
+async function saveMonthlyActual(year, month, field, value) {
+  if (!db) return;
+  const key = `${year}-${month}`;
+  if (!monthlyActuals[key]) {
+    monthlyActuals[key] = {
+      id: key, year, month,
+      revenue_total: 0, revenue_service: 0, revenue_install: 0,
+      revenue_rebate: 0, revenue_other: 0, jobs_completed: 0, active_crews: 3
+    };
+  }
+  monthlyActuals[key][field] = value;
+  monthlyActuals[key].updated_at = new Date().toISOString();
+  try {
+    const { error } = await db.from('monthly_actuals').upsert(monthlyActuals[key]);
+    if (error) throw error;
+  } catch (e) {
+    console.error('Save actual failed:', e);
+    toast('Save failed — try again');
+  }
+}
+
 function debouncedSave() {
   if (saveTimeout) clearTimeout(saveTimeout);
   saveTimeout = setTimeout(() => saveToCloud(), 800);
 }
 
-// ============ UI INIT ============
 async function init() {
   if (SUPABASE_URL.startsWith('PASTE_') || SUPABASE_KEY.startsWith('PASTE_')) {
-    document.body.innerHTML = '<div style="max-width:600px;margin:60px auto;padding:40px;font-family:Inter,sans-serif;background:#ebe6dc;border:1.5px solid #0a0a0a;"><h1 style="font-family:Bebas Neue,sans-serif;font-size:32px;margin-bottom:12px;">Setup Needed</h1><p style="margin-bottom:12px;">Open <code style="background:#0a0a0a;color:#f5f1ea;padding:2px 6px;">advanced-job-calculator.html</code> and paste your Supabase URL and anon key into the two lines marked <code style="background:#0a0a0a;color:#f5f1ea;padding:2px 6px;">PASTE_YOUR_..._HERE</code> at the top of the &lt;script&gt; section, then commit and redeploy.</p></div>';
+    document.body.innerHTML = '<div style="max-width:600px;margin:60px auto;padding:40px;font-family:Inter,sans-serif;background:#ebe6dc;border:1.5px solid #0a0a0a;"><h1>Setup Needed</h1></div>';
     return;
   }
-
   try {
     db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   } catch (e) {
-    document.body.innerHTML = '<div style="padding:40px;font-family:Inter,sans-serif;">Bad Supabase config. Check the keys in the source code.</div>';
+    document.body.innerHTML = '<div style="padding:40px;">Bad Supabase config.</div>';
     return;
   }
-
   loadLocalQuote();
   await loadFromCloud();
+  await loadMonthlyActuals();
   bindEvents();
   renderAll();
-
-  // realtime sync — auto-pull when others change data
   db.channel('calc_data_changes')
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'calc_data' }, async (payload) => {
       if (payload.new && payload.new.data) {
@@ -898,15 +1347,20 @@ async function init() {
           isLoadingFromCloud = true;
           state = { ...DEFAULT_STATE, ...payload.new.data };
           state.ac = { ...DEFAULT_STATE.ac, ...(payload.new.data.ac || {}) };
+          if (!state.pricebook) state.pricebook = JSON.parse(JSON.stringify(DEFAULT_STATE.pricebook));
+          if (!state.categoryMarkup) state.categoryMarkup = JSON.parse(JSON.stringify(DEFAULT_STATE.categoryMarkup));
+          if (!state.yearTargets) state.yearTargets = JSON.parse(JSON.stringify(DEFAULT_STATE.yearTargets));
           isLoadingFromCloud = false;
           renderAll();
           toast('Updated by another user');
         }
       }
     })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'monthly_actuals' }, async (payload) => {
+      await loadMonthlyActuals();
+      renderMonthGrid();
+    })
     .subscribe();
-
-  // poll every 30s as a backup
   setInterval(() => loadFromCloud().then(renderAll), 30000);
 }
 
@@ -962,19 +1416,13 @@ function renderCalcFlow() {
 function scaledAmount(item) {
   const amt = Number(item.amount) || 0;
   if (!item.type || item.type === 'fixed') return amt;
-  if (item.type === 'per_van') {
-    return amt * (state.vans || 0);
-  }
-  if (item.type === 'per_person') {
-    return amt * state.team.length;
-  }
+  if (item.type === 'per_van') return amt * (state.vans || 0);
+  if (item.type === 'per_person') return amt * state.team.length;
   return amt;
 }
 
-// Annual wage cost for any person (director uses annualWages, others use payRate × on-cost × hours)
 function personAnnualCost(p) {
   if (p.isDirector) return Number(p.annualWages) || 0;
-  // for hourly staff: detect FTE from role description for part-timers
   const role = (p.role || '').toLowerCase();
   let fte = 1;
   if (role.includes('3 days')) fte = 3/5;
@@ -984,64 +1432,47 @@ function personAnnualCost(p) {
   return (p.payRate || 0) * (1 + (p.onCost || 0) / 100) * hoursYear;
 }
 
-// School/training days portion of wages (paid but not productive on the tools)
 function schoolWagesAnnual(p) {
   const days = Number(p.schoolDays) || 0;
   if (!days) return 0;
-  const workDaysPerYear = 240; // ~5 days/wk × 52wks - leave/sick/pubhol
+  const workDaysPerYear = 240;
   const proportion = Math.min(days / workDaysPerYear, 1);
   return personAnnualCost(p) * proportion;
 }
 
-// Hourly cost when this person is on a job (used in quote calculations)
 function personHourlyCost(p) {
   if (p.isDirector) {
-    // director's hourly cost = (billable portion of annual wages) / billable hours per year
     const billableHours = effectiveHoursPerVan() * ((p.billablePct || 0) / 100);
     return billableHours > 0 ? (personAnnualCost(p) * (p.billablePct || 0) / 100) / billableHours : 0;
   }
   return (p.payRate || 0) * (1 + (p.onCost || 0) / 100);
 }
 
-// Sum of non-billable wages across team — flows into overhead automatically
-// Includes: admin time (1 - billable%) AND school/training days
 function nonBillableWagesAnnual() {
   return state.team.reduce((sum, p) => {
     const billable = (p.billablePct !== undefined ? p.billablePct : 100) / 100;
     const annualCost = personAnnualCost(p);
     const adminPortion = annualCost * (1 - billable);
-    const schoolPortion = schoolWagesAnnual(p) * billable; // already-billable folks who go to school
+    const schoolPortion = schoolWagesAnnual(p) * billable;
     return sum + adminPortion + schoolPortion;
   }, 0);
 }
 
-// Total apprentice subsidy income (offsets overhead)
 function apprenticeSubsidyAnnual() {
   return state.team.reduce((sum, p) => sum + (Number(p.apprenticeSubsidy) || 0), 0);
 }
 
-// Fleet helpers
 function vehicleAnnualDep(v) {
   const price = Number(v.purchasePrice) || 0;
   const life = Number(v.lifeYears) || 8;
   if (v.status === 'sold') return 0;
   return life > 0 ? price / life : 0;
 }
-function vehicleEquity(v) {
-  return (Number(v.purchasePrice) || 0) - (Number(v.loanOwing) || 0);
-}
-function fleetDepreciationAnnual() {
-  return (state.fleet || []).reduce((s, v) => s + vehicleAnnualDep(v), 0);
-}
-function fleetActiveCount() {
-  return (state.fleet || []).filter(v => v.status === 'active').length;
-}
-function fleetTotalValue() {
-  return (state.fleet || []).filter(v => v.status !== 'sold').reduce((s, v) => s + (Number(v.purchasePrice) || 0), 0);
-}
-function fleetTotalOwing() {
-  return (state.fleet || []).filter(v => v.status !== 'sold').reduce((s, v) => s + (Number(v.loanOwing) || 0), 0);
-}
+function vehicleEquity(v) { return (Number(v.purchasePrice) || 0) - (Number(v.loanOwing) || 0); }
+function fleetDepreciationAnnual() { return (state.fleet || []).reduce((s, v) => s + vehicleAnnualDep(v), 0); }
+function fleetActiveCount() { return (state.fleet || []).filter(v => v.status === 'active').length; }
+function fleetTotalValue() { return (state.fleet || []).filter(v => v.status !== 'sold').reduce((s, v) => s + (Number(v.purchasePrice) || 0), 0); }
+function fleetTotalOwing() { return (state.fleet || []).filter(v => v.status !== 'sold').reduce((s, v) => s + (Number(v.loanOwing) || 0), 0); }
 
 function totalOverhead() {
   const listed = state.overhead.reduce((s, o) => s + scaledAmount(o), 0);
@@ -1050,12 +1481,10 @@ function totalOverhead() {
 
 function effectiveHoursPerVan() { return state.autoCalc === 'auto' ? calcAutoHours().billableHours : state.hoursPerVan; }
 
-// People-based capacity: sum of billable% across team × hours/van, capped by van count × hours
 function totalCapacity() {
   const hoursPerVan = effectiveHoursPerVan();
   const peopleCapacity = state.team.reduce((s, p) => {
     const billable = (p.billablePct !== undefined ? p.billablePct : 100) / 100;
-    // school days reduce billable capacity
     const schoolDays = Number(p.schoolDays) || 0;
     const schoolFraction = Math.min(schoolDays / 240, 1);
     const effectiveBillable = billable * (1 - schoolFraction);
@@ -1066,7 +1495,6 @@ function totalCapacity() {
 }
 function overheadPerHour() { const cap = totalCapacity(); return cap > 0 ? totalOverhead() / cap : 0; }
 
-// Backwards-compatible alias used in older code paths
 function trueCost(person) { return personHourlyCost(person); }
 
 function avgInstallerCost() {
@@ -1077,6 +1505,22 @@ function avgApprenticeCost() {
   const apprs = state.team.filter(p => isApprentice(p) && (p.billablePct === undefined || p.billablePct > 0));
   return apprs.length ? apprs.reduce((s, p) => s + personHourlyCost(p), 0) / apprs.length : 0;
 }
+
+function captureFocus(parent) {
+  const a = document.activeElement;
+  if (!a || !parent.contains(a)) return null;
+  return { row: a.dataset.row, field: a.dataset.field, start: a.selectionStart, end: a.selectionEnd };
+}
+function restoreFocus(parent, info) {
+  if (!info) return;
+  const sel = parent.querySelector(`[data-row="${info.row}"][data-field="${info.field}"]`);
+  if (sel) {
+    sel.focus();
+    try { sel.setSelectionRange(info.start, info.end); } catch (e) {}
+  }
+}
+
+function escapeHtml(str) { return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function renderOverhead() {
   if (document.activeElement.id !== 'ohVans') document.getElementById('ohVans').value = state.vans;
@@ -1107,25 +1551,15 @@ function renderOverhead() {
     const scaled = scaledAmount(o);
     const isScaled = type !== 'fixed';
     const scaledColor = isScaled ? 'var(--ink)' : 'var(--muted)';
-    // multiplier display
-    let multText = '—';
-    let multSub = '';
-    if (type === 'per_van') {
-      multText = '× ' + (state.vans || 0);
-      multSub = `${state.vans || 0} vans`;
-    } else if (type === 'per_person') {
-      multText = '× ' + state.team.length;
-      multSub = `${state.team.length} people`;
-    } else {
-      multText = '× 1';
-      multSub = 'fixed';
-    }
+    let multText = '—', multSub = '';
+    if (type === 'per_van') { multText = '× ' + (state.vans || 0); multSub = `${state.vans || 0} vans`; }
+    else if (type === 'per_person') { multText = '× ' + state.team.length; multSub = `${state.team.length} people`; }
+    else { multText = '× 1'; multSub = 'fixed'; }
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><input type="text" value="${escapeHtml(o.name)}" data-row="${i}" data-field="name" oninput="updateOverhead(${i},'name',this.value)"></td><td><select data-row="${i}" data-field="type" onchange="updateOverhead(${i},'type',this.value)"><option value="fixed"${type==='fixed'?' selected':''}>Fixed</option><option value="per_van"${type==='per_van'?' selected':''}>Per Van</option><option value="per_person"${type==='per_person'?' selected':''}>Per Person</option></select></td><td><input type="number" value="${o.amount}" step="1" data-row="${i}" data-field="amount" oninput="updateOverhead(${i},'amount',this.value)"></td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">${multText}<div style="font-size:10px;opacity:0.7;">${multSub}</div></td><td style="color:${scaledColor};font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(scaled)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeOverhead(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
 
-  // Append auto-flow virtual rows (read-only)
   const fleetDep = fleetDepreciationAnnual();
   if (fleetDep > 0) {
     const tr = document.createElement('tr');
@@ -1137,14 +1571,14 @@ function renderOverhead() {
   if (nbw > 0) {
     const tr = document.createElement('tr');
     tr.style.background = 'rgba(255, 90, 31, 0.06)';
-    tr.innerHTML = `<td style="opacity:0.85;"><strong>Non-Billable Wages</strong> <span style="font-size:10px;color:var(--muted);">(auto from Team tab — admin time + school/training days + admin staff wages)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">computed</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(nbw)}</td><td class="actions-cell"></td>`;
+    tr.innerHTML = `<td style="opacity:0.85;"><strong>Non-Billable Wages</strong> <span style="font-size:10px;color:var(--muted);">(auto from Team tab)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">computed</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(nbw)}</td><td class="actions-cell"></td>`;
     tbody.appendChild(tr);
   }
   const subsidy = apprenticeSubsidyAnnual();
   if (subsidy > 0) {
     const tr = document.createElement('tr');
     tr.style.background = 'rgba(74, 192, 142, 0.08)';
-    tr.innerHTML = `<td style="opacity:0.85;"><strong>− Govt Training Subsidies</strong> <span style="font-size:10px;color:var(--muted);">(auto from Team tab — apprentice scheme & other incentives)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">credit</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--good);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">−${fmt$(subsidy)}</td><td class="actions-cell"></td>`;
+    tr.innerHTML = `<td style="opacity:0.85;"><strong>− Govt Training Subsidies</strong> <span style="font-size:10px;color:var(--muted);">(from Team tab)</span></td><td style="opacity:0.7;">auto</td><td style="opacity:0.7;color:var(--muted);font-style:italic;font-size:12px;">credit</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);text-align:center;">—</td><td style="color:var(--good);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">−${fmt$(subsidy)}</td><td class="actions-cell"></td>`;
     tbody.appendChild(tr);
   }
   restoreFocus(tbody, focusInfo);
@@ -1156,7 +1590,6 @@ function renderOverhead() {
   document.getElementById('ohDaily').textContent = fmt$(total / 260);
   document.getElementById('ohPerHour').textContent = fmt$2(overheadPerHour());
 
-  // fixed/variable split
   const fixedTotal = state.overhead.filter(o => (o.type || 'fixed') === 'fixed').reduce((s, o) => s + scaledAmount(o), 0);
   const variableTotal = total - fixedTotal;
   const fixedPct = total > 0 ? (fixedTotal / total * 100).toFixed(0) : 0;
@@ -1164,29 +1597,11 @@ function renderOverhead() {
   document.getElementById('ohSplit').innerHTML = `${fmt$(fixedTotal)} / ${fmt$(variableTotal)}<div class="stat-sub" style="margin-top:2px;">${fixedPct}% fixed · ${varPct}% scales</div>`;
 }
 
-function captureFocus(parent) {
-  const a = document.activeElement;
-  if (!a || !parent.contains(a)) return null;
-  return { row: a.dataset.row, field: a.dataset.field, start: a.selectionStart, end: a.selectionEnd };
-}
-function restoreFocus(parent, info) {
-  if (!info) return;
-  const sel = parent.querySelector(`[data-row="${info.row}"][data-field="${info.field}"]`);
-  if (sel) {
-    sel.focus();
-    try { sel.setSelectionRange(info.start, info.end); } catch (e) {}
-  }
-}
-
 function updateOverhead(i, field, val) {
   state.overhead[i][field] = field === 'amount' ? (parseFloat(val) || 0) : val;
-  // for type changes, do a full re-render so the scaled column updates
   if (field === 'type') {
-    renderOverhead();
-    renderQuote();
-    renderDashboard();
+    renderOverhead(); renderQuote(); renderDashboard();
   } else {
-    // light update: recompute totals only
     const total = totalOverhead();
     document.getElementById('ohTotal').textContent = fmt$(total);
     document.getElementById('ohMonthly').textContent = fmt$(total / 12);
@@ -1199,13 +1614,235 @@ function updateOverhead(i, field, val) {
 function addOverheadRow() { state.overhead.push({ name: 'New Cost', amount: 0, type: 'fixed' }); renderOverhead(); debouncedSave(); }
 function removeOverhead(i) { state.overhead.splice(i, 1); renderOverhead(); debouncedSave(); }
 
+function categoryMarkup(cat) {
+  return state.categoryMarkup[cat] !== undefined ? state.categoryMarkup[cat] : 30;
+}
+
+function pricebookTargetPrice(item) {
+  const labourCost = (avgInstallerCost() + avgApprenticeCost()) * item.hours;
+  const overhead = overheadPerHour() * item.hours;
+  const materialsCost = item.materials || 0;
+  const markup = item.markup !== null && item.markup !== undefined ? item.markup : categoryMarkup(item.category);
+  const materialsSell = materialsCost * (1 + markup / 100);
+  const baseRevenue = (labourCost + overhead) / (1 - (item.marginPct || 0.18)) + materialsSell;
+  return { price: baseRevenue, materialsSell, labourCost, overhead, materialsCost };
+}
+
+function renderPricebook() {
+  if (document.activeElement.id !== 'cmService') document.getElementById('cmService').value = state.categoryMarkup.service;
+  if (document.activeElement.id !== 'cmInstall') document.getElementById('cmInstall').value = state.categoryMarkup.install;
+  if (document.activeElement.id !== 'cmInvestigation') document.getElementById('cmInvestigation').value = state.categoryMarkup.investigation;
+  if (document.activeElement.id !== 'cmMaintenance') document.getElementById('cmMaintenance').value = state.categoryMarkup.maintenance;
+  if (document.activeElement.id !== 'cmRebate') document.getElementById('cmRebate').value = state.categoryMarkup.rebate;
+
+  const tbody = document.getElementById('pricebookTable');
+  const focusInfo = captureFocus(tbody);
+  tbody.innerHTML = '';
+  state.pricebook.forEach((item, i) => {
+    const calc = pricebookTargetPrice(item);
+    const markupVal = item.markup !== null && item.markup !== undefined ? item.markup : categoryMarkup(item.category);
+    const isOverride = item.markup !== null && item.markup !== undefined;
+    const tr = document.createElement('tr');
+    tr.className = 'cat-' + item.category;
+    tr.innerHTML = `
+      <td><input type="text" value="${escapeHtml(item.name)}" data-row="${i}" data-field="name" oninput="updatePricebook(${i},'name',this.value)"></td>
+      <td>
+        <select data-row="${i}" data-field="category" onchange="updatePricebook(${i},'category',this.value)">
+          <option value="service"${item.category === 'service' ? ' selected' : ''}>Service</option>
+          <option value="install"${item.category === 'install' ? ' selected' : ''}>Install</option>
+          <option value="investigation"${item.category === 'investigation' ? ' selected' : ''}>Investigation</option>
+          <option value="maintenance"${item.category === 'maintenance' ? ' selected' : ''}>Maintenance</option>
+          <option value="rebate"${item.category === 'rebate' ? ' selected' : ''}>Rebate</option>
+        </select>
+      </td>
+      <td><input type="number" value="${item.hours}" step="0.25" min="0" data-row="${i}" data-field="hours" oninput="updatePricebook(${i},'hours',this.value)"></td>
+      <td><input type="number" value="${item.materials}" step="10" min="0" data-row="${i}" data-field="materials" oninput="updatePricebook(${i},'materials',this.value)"></td>
+      <td><input type="number" value="${markupVal}" step="5" min="0" max="200" data-row="${i}" data-field="markup" oninput="updatePricebook(${i},'markup',this.value)" title="${isOverride ? 'Custom override' : 'Inherited from category'}" style="${!isOverride ? 'opacity:0.6;font-style:italic;' : ''}"></td>
+      <td><input type="number" value="${(item.marginPct * 100).toFixed(0)}" step="1" min="0" max="50" data-row="${i}" data-field="marginPct" oninput="updatePricebook(${i},'marginPct',this.value)"></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:600;">${fmt$(calc.price)}</td>
+      <td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removePricebookItem(${i})">×</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  restoreFocus(tbody, focusInfo);
+
+  const byCategory = (cat) => {
+    const items = state.pricebook.filter(i => i.category === cat);
+    if (!items.length) return 0;
+    return items.reduce((s, i) => s + pricebookTargetPrice(i).price, 0) / items.length;
+  };
+  document.getElementById('pbAvgService').textContent = fmt$(byCategory('service'));
+  document.getElementById('pbAvgInstall').textContent = fmt$(byCategory('install'));
+  document.getElementById('pbAvgInvestigation').textContent = fmt$(byCategory('investigation'));
+  document.getElementById('pbTotalItems').textContent = state.pricebook.length;
+}
+
+function updatePricebook(i, field, val) {
+  if (field === 'hours' || field === 'materials' || field === 'markup' || field === 'marginPct') {
+    state.pricebook[i][field] = field === 'marginPct' ? (parseFloat(val) || 0) / 100 : (parseFloat(val) || 0);
+    if (field === 'markup' && (val === '' || val === null)) state.pricebook[i].markup = null;
+  } else {
+    state.pricebook[i][field] = val;
+    if (field === 'category') {
+      state.pricebook[i].markup = null;
+    }
+  }
+  renderPricebook();
+  debouncedSave();
+}
+
+function addPricebookItem() {
+  state.pricebook.push({ name: 'New Job', category: 'service', hours: 1, materials: 0, markup: null, marginPct: 0.18 });
+  renderPricebook();
+  debouncedSave();
+}
+
+function removePricebookItem(i) {
+  state.pricebook.splice(i, 1);
+  renderPricebook();
+  debouncedSave();
+}
+
+function getActiveScenarioTargets() {
+  return state.yearTargets[activeScenario] || state.yearTargets.current;
+}
+
+function renderTargets() {
+  const t = getActiveScenarioTargets();
+  if (document.activeElement.id !== 'tgtAnnual') document.getElementById('tgtAnnual').value = t.annual;
+  if (document.activeElement.id !== 'tgtCrews') document.getElementById('tgtCrews').value = t.crews;
+  const workingDays = parseFloat(document.getElementById('tgtWorkingDays').value) || 240;
+
+  const monthly = t.annual / 12;
+  const weekly = t.annual / (workingDays / 5);
+  const daily = t.annual / workingDays;
+  const perCrewWeek = weekly / t.crews;
+  const perCrewDay = daily / t.crews;
+  const perCrewHour = perCrewDay / (8 * 0.6);
+
+  document.getElementById('tgtMonthly').textContent = fmt$(monthly);
+  document.getElementById('tgtWeekly').textContent = fmt$(weekly);
+  document.getElementById('tgtDaily').textContent = fmt$(daily);
+  document.getElementById('tgtPerCrewWeek').textContent = fmt$(perCrewWeek);
+  document.getElementById('tgtPerCrewDay').textContent = fmt$(perCrewDay);
+  document.getElementById('tgtPerCrewHour').textContent = fmt$2(perCrewHour);
+
+  const jobMixes = [
+    { name: 'Service-only day', ticket: 600, notes: '1-3hr jobs, high count' },
+    { name: 'Maintenance day (planned)', ticket: 350, notes: 'Member visits' },
+    { name: 'Small install (split system 2.5kW)', ticket: 2400, notes: '1 small install + small upsell' },
+    { name: 'Medium install (split 5-7kW)', ticket: 3500, notes: 'Standard residential install' },
+    { name: 'Big install / multi-head', ticket: 4500, notes: 'Half a ducted, OR multi-head' },
+    { name: 'Investigation / rectification', ticket: 1200, notes: '1-2 jobs typically' },
+    { name: 'Mixed day (1 install + 2 services)', ticket: 4000, notes: 'Most realistic blend' }
+  ];
+  const tbody = document.getElementById('dayJobsTable');
+  tbody.innerHTML = '';
+  jobMixes.forEach(jm => {
+    const jobsPerDay = perCrewDay / jm.ticket;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${jm.name}</strong></td><td>${fmt$(jm.ticket)}</td><td><strong>${jobsPerDay.toFixed(1)}</strong></td><td style="color:var(--muted);font-size:12px;">${jm.notes}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  renderMonthGrid();
+}
+
+function renderMonthGrid() {
+  const year = parseInt(document.getElementById('trackerYear').value) || new Date().getFullYear();
+  const scenario = document.getElementById('trackerScenario').value;
+  const t = state.yearTargets[scenario] || state.yearTargets.current;
+  const monthlyTarget = t.annual / 12;
+
+  const grid = document.getElementById('monthGrid');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  const focusInfo = (() => {
+    const a = document.activeElement;
+    if (!a || !grid.contains(a)) return null;
+    return { month: a.dataset.month, field: a.dataset.field, start: a.selectionStart, end: a.selectionEnd };
+  })();
+
+  let html = '';
+  html += '<div class="mg-head"></div>';
+  months.forEach(m => { html += `<div class="mg-head">${m}</div>`; });
+
+  html += '<div class="mg-rowlabel first">Target</div>';
+  for (let m = 1; m <= 12; m++) {
+    html += `<div class="mg-cell target"><span>${fmt$(monthlyTarget)}</span></div>`;
+  }
+
+  html += '<div class="mg-rowlabel">Actual</div>';
+  for (let m = 1; m <= 12; m++) {
+    const data = monthlyActuals[`${year}-${m}`] || {};
+    const actual = data.revenue_total || 0;
+    let cls = 'mg-cell actual';
+    if (actual > 0) {
+      if (actual >= monthlyTarget) cls += ' over';
+      else cls += ' under';
+    }
+    html += `<div class="${cls}"><input type="number" value="${actual || ''}" placeholder="0" step="1000" data-month="${m}" data-field="revenue_total" oninput="updateMonthlyActual(${year}, ${m}, 'revenue_total', this.value)"></div>`;
+  }
+
+  html += '<div class="mg-rowlabel">Var</div>';
+  for (let m = 1; m <= 12; m++) {
+    const data = monthlyActuals[`${year}-${m}`] || {};
+    const actual = data.revenue_total || 0;
+    const variance = actual ? actual - monthlyTarget : null;
+    const color = variance === null ? 'var(--muted)' : (variance >= 0 ? 'var(--good)' : 'var(--bad)');
+    const display = variance === null ? '—' : (variance >= 0 ? '+' + fmt$(variance) : '−' + fmt$(Math.abs(variance)));
+    html += `<div class="mg-cell target"><span style="color:${color};">${display}</span></div>`;
+  }
+
+  grid.innerHTML = html;
+
+  if (focusInfo) {
+    const sel = grid.querySelector(`input[data-month="${focusInfo.month}"][data-field="${focusInfo.field}"]`);
+    if (sel) {
+      sel.focus();
+      try { sel.setSelectionRange(focusInfo.start, focusInfo.end); } catch (e) {}
+    }
+  }
+
+  const today = new Date();
+  const currentMonth = year === today.getFullYear() ? today.getMonth() + 1 : 12;
+  let ytdActual = 0;
+  for (let m = 1; m <= currentMonth; m++) {
+    ytdActual += (monthlyActuals[`${year}-${m}`] || {}).revenue_total || 0;
+  }
+  const ytdTarget = monthlyTarget * currentMonth;
+  const ytdVariance = ytdActual - ytdTarget;
+  document.getElementById('ytdActual').textContent = fmt$(ytdActual);
+  document.getElementById('ytdTarget').textContent = fmt$(ytdTarget);
+  const varEl = document.getElementById('ytdVariance');
+  varEl.textContent = (ytdVariance >= 0 ? '+' : '−') + fmt$(Math.abs(ytdVariance));
+  varEl.className = 'stat-value ' + (ytdVariance >= 0 ? 'good' : 'bad');
+  const okEl = document.getElementById('ytdOnTrack');
+  if (ytdActual === 0) {
+    okEl.textContent = '—';
+    okEl.className = 'stat-value';
+  } else if (ytdVariance >= 0) {
+    okEl.textContent = 'YES ✓';
+    okEl.className = 'stat-value good';
+  } else {
+    okEl.textContent = 'BEHIND';
+    okEl.className = 'stat-value bad';
+  }
+}
+
+async function updateMonthlyActual(year, month, field, val) {
+  const value = parseFloat(val) || 0;
+  await saveMonthlyActual(year, month, field, value);
+  renderMonthGrid();
+}
+
 function bindEvents() {
-  document.getElementById('ohVans').addEventListener('input', e => { state.vans = parseInt(e.target.value) || 1; renderOverhead(); renderQuote(); renderDashboard(); debouncedSave(); });
-  document.getElementById('ohAutoCalc').addEventListener('change', e => { state.autoCalc = e.target.value; renderOverhead(); renderQuote(); renderDashboard(); debouncedSave(); });
+  document.getElementById('ohVans').addEventListener('input', e => { state.vans = parseInt(e.target.value) || 1; renderOverhead(); renderQuote(); renderDashboard(); renderPricebook(); debouncedSave(); });
+  document.getElementById('ohAutoCalc').addEventListener('change', e => { state.autoCalc = e.target.value; renderOverhead(); renderQuote(); renderDashboard(); renderPricebook(); debouncedSave(); });
   document.getElementById('ohHoursPerVan').addEventListener('input', e => {
     if (state.autoCalc === 'manual') {
       state.hoursPerVan = parseInt(e.target.value) || 1600;
-      renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
+      renderOverhead(); renderQuote(); renderDashboard(); renderPricebook(); debouncedSave();
     }
   });
 
@@ -1213,7 +1850,7 @@ function bindEvents() {
   Object.keys(acFieldMap).forEach(id => {
     document.getElementById(id).addEventListener('input', e => {
       state.ac[acFieldMap[id]] = parseFloat(e.target.value) || 0;
-      renderOverhead(); renderQuote(); renderDashboard(); debouncedSave();
+      renderOverhead(); renderQuote(); renderDashboard(); renderPricebook(); debouncedSave();
     });
   });
 
@@ -1224,6 +1861,11 @@ function bindEvents() {
   });
   document.getElementById('qPricingMode').addEventListener('change', e => {
     localQuote.pricingMode = e.target.value;
+    saveLocalQuote(); renderQuote();
+  });
+  document.getElementById('qCategory').addEventListener('change', e => {
+    localQuote.category = e.target.value;
+    localQuote.markup = categoryMarkup(localQuote.category);
     saveLocalQuote(); renderQuote();
   });
   document.getElementById('qFixedPrice').addEventListener('input', e => {
@@ -1253,10 +1895,40 @@ function bindEvents() {
   });
   document.getElementById('qMaterials').addEventListener('input', e => { localQuote.materials = parseFloat(e.target.value) || 0; saveLocalQuote(); renderQuote(); });
   document.getElementById('qMarkup').addEventListener('input', e => { localQuote.markup = parseFloat(e.target.value) || 0; saveLocalQuote(); renderQuote(); });
+
+  ['cmService', 'cmInstall', 'cmInvestigation', 'cmMaintenance', 'cmRebate'].forEach(id => {
+    const cat = id.replace('cm', '').toLowerCase();
+    document.getElementById(id).addEventListener('input', e => {
+      state.categoryMarkup[cat] = parseFloat(e.target.value) || 0;
+      renderPricebook();
+      debouncedSave();
+    });
+  });
+
+  document.querySelectorAll('.scenario-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeScenario = tab.dataset.scenario;
+      renderTargets();
+    });
+  });
+  document.getElementById('tgtAnnual').addEventListener('input', e => {
+    state.yearTargets[activeScenario].annual = parseFloat(e.target.value) || 0;
+    renderTargets();
+    debouncedSave();
+  });
+  document.getElementById('tgtCrews').addEventListener('input', e => {
+    state.yearTargets[activeScenario].crews = parseInt(e.target.value) || 1;
+    renderTargets();
+    debouncedSave();
+  });
+  document.getElementById('tgtWorkingDays').addEventListener('input', () => renderTargets());
+  document.getElementById('trackerYear').addEventListener('change', () => renderMonthGrid());
+  document.getElementById('trackerScenario').addEventListener('change', () => renderMonthGrid());
 }
 
 function renderTeam() {
-  // DIRECTORS table
   const dTbody = document.querySelector('#directorsTable tbody');
   const dFocus = captureFocus(dTbody);
   dTbody.innerHTML = '';
@@ -1270,14 +1942,13 @@ function renderTeam() {
   });
   restoreFocus(dTbody, dFocus);
 
-  // INSTALLERS & APPRENTICES table (excludes directors and 0% billable)
   const tbody = document.querySelector('#teamTable tbody');
   const focusInfo = captureFocus(tbody);
   tbody.innerHTML = '';
   state.team.forEach((p, i) => {
     if (p.isDirector) return;
     const billable = p.billablePct !== undefined ? p.billablePct : 100;
-    if (billable === 0) return; // 0% billable goes in admin section
+    if (billable === 0) return;
     const tc = personHourlyCost(p);
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><input type="text" value="${escapeHtml(p.name)}" data-row="${i}" data-field="name" oninput="updateTeam(${i},'name',this.value)"></td><td><input type="text" value="${escapeHtml(p.role || '')}" data-row="${i}" data-field="role" oninput="updateTeam(${i},'role',this.value)"></td><td><input type="number" value="${p.payRate || 0}" step="0.5" data-row="${i}" data-field="payRate" oninput="updateTeam(${i},'payRate',this.value)"></td><td><input type="number" value="${p.onCost || 0}" step="1" data-row="${i}" data-field="onCost" oninput="updateTeam(${i},'onCost',this.value)"></td><td><input type="number" value="${billable}" step="10" min="0" max="100" data-row="${i}" data-field="billablePct" oninput="updateTeam(${i},'billablePct',this.value)"></td><td><input type="number" value="${p.schoolDays || 0}" step="1" min="0" max="240" data-row="${i}" data-field="schoolDays" oninput="updateTeam(${i},'schoolDays',this.value)"></td><td><input type="number" value="${p.apprenticeSubsidy || 0}" step="100" min="0" data-row="${i}" data-field="apprenticeSubsidy" oninput="updateTeam(${i},'apprenticeSubsidy',this.value)"></td><td><strong>${fmt$2(tc)}</strong></td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeTeam(${i})">×</button></td>`;
@@ -1285,7 +1956,6 @@ function renderTeam() {
   });
   restoreFocus(tbody, focusInfo);
 
-  // OFFICE/ADMIN table (0% billable, not directors)
   const aTbody = document.querySelector('#adminTable tbody');
   const aFocus = captureFocus(aTbody);
   aTbody.innerHTML = '';
@@ -1303,24 +1973,18 @@ function renderTeam() {
 function updateTeam(i, field, val) {
   const numericFields = ['payRate', 'onCost', 'billablePct', 'annualWages', 'schoolDays', 'apprenticeSubsidy'];
   state.team[i][field] = numericFields.includes(field) ? (parseFloat(val) || 0) : val;
-  // for billablePct changes, the person might switch sections - do full re-render
-  if (field === 'billablePct' || field === 'annualWages') {
-    renderTeam();
-  }
-  renderQuoteTeamPicker();
-  renderQuote();
-  renderOverhead();
-  renderDashboard();
+  if (field === 'billablePct' || field === 'annualWages') renderTeam();
+  renderQuoteTeamPicker(); renderQuote(); renderOverhead(); renderDashboard(); renderPricebook();
   debouncedSave();
 }
-function addDirectorRow() { state.team.push({ name: 'New Director', role: 'Director', isDirector: true, annualWages: 100000, billablePct: 50 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); debouncedSave(); }
-function addTeamRow() { state.team.push({ name: 'New Installer', role: 'Installer', payRate: 30, onCost: 25, billablePct: 100 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); debouncedSave(); }
-function addAdminRow() { state.team.push({ name: 'New Admin', role: 'Office Admin', payRate: 30, onCost: 25, billablePct: 0 }); renderTeam(); renderOverhead(); renderDashboard(); debouncedSave(); }
+function addDirectorRow() { state.team.push({ name: 'New Director', role: 'Director', isDirector: true, annualWages: 100000, billablePct: 50 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); renderPricebook(); debouncedSave(); }
+function addTeamRow() { state.team.push({ name: 'New Installer', role: 'Installer', payRate: 30, onCost: 25, billablePct: 100 }); renderTeam(); renderQuoteTeamPicker(); renderOverhead(); renderDashboard(); renderPricebook(); debouncedSave(); }
+function addAdminRow() { state.team.push({ name: 'New Admin', role: 'Office Admin', payRate: 30, onCost: 25, billablePct: 0 }); renderTeam(); renderOverhead(); renderDashboard(); renderPricebook(); debouncedSave(); }
 function removeTeam(i) {
   state.team.splice(i, 1);
   localQuote.selectedTeam = localQuote.selectedTeam.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx);
   saveLocalQuote();
-  renderTeam(); renderQuoteTeamPicker(); renderQuote(); renderOverhead(); renderDashboard(); debouncedSave();
+  renderTeam(); renderQuoteTeamPicker(); renderQuote(); renderOverhead(); renderDashboard(); renderPricebook(); debouncedSave();
 }
 
 function renderFleet() {
@@ -1335,26 +1999,11 @@ function renderFleet() {
     const status = v.status || 'active';
     const equityColor = equity >= 0 ? 'var(--good)' : 'var(--bad)';
     const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="text" value="${escapeHtml(v.make || '')}" data-row="${i}" data-field="make" oninput="updateVehicle(${i},'make',this.value)"></td>
-      <td><input type="text" value="${escapeHtml(v.rego || '')}" data-row="${i}" data-field="rego" oninput="updateVehicle(${i},'rego',this.value)"></td>
-      <td><input type="number" value="${v.purchasePrice || 0}" step="500" data-row="${i}" data-field="purchasePrice" oninput="updateVehicle(${i},'purchasePrice',this.value)"></td>
-      <td><input type="number" value="${v.loanOwing || 0}" step="500" data-row="${i}" data-field="loanOwing" oninput="updateVehicle(${i},'loanOwing',this.value)"></td>
-      <td><input type="number" value="${v.year || ''}" step="1" min="1990" max="2030" data-row="${i}" data-field="year" oninput="updateVehicle(${i},'year',this.value)"></td>
-      <td><input type="number" value="${v.lifeYears || 8}" step="1" min="1" max="20" data-row="${i}" data-field="lifeYears" oninput="updateVehicle(${i},'lifeYears',this.value)"></td>
-      <td><select data-row="${i}" data-field="status" onchange="updateVehicle(${i},'status',this.value)">
-        <option value="active"${status === 'active' ? ' selected' : ''}>Active</option>
-        <option value="in_repair"${status === 'in_repair' ? ' selected' : ''}>In Repair</option>
-        <option value="sold"${status === 'sold' ? ' selected' : ''}>Sold</option>
-      </select></td>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(dep)}</td>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${equityColor};font-weight:600;">${fmt$(equity)}</td>
-      <td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeVehicle(${i})">×</button></td>`;
+    tr.innerHTML = `<td><input type="text" value="${escapeHtml(v.make || '')}" data-row="${i}" data-field="make" oninput="updateVehicle(${i},'make',this.value)"></td><td><input type="text" value="${escapeHtml(v.rego || '')}" data-row="${i}" data-field="rego" oninput="updateVehicle(${i},'rego',this.value)"></td><td><input type="number" value="${v.purchasePrice || 0}" step="500" data-row="${i}" data-field="purchasePrice" oninput="updateVehicle(${i},'purchasePrice',this.value)"></td><td><input type="number" value="${v.loanOwing || 0}" step="500" data-row="${i}" data-field="loanOwing" oninput="updateVehicle(${i},'loanOwing',this.value)"></td><td><input type="number" value="${v.year || ''}" step="1" min="1990" max="2030" data-row="${i}" data-field="year" oninput="updateVehicle(${i},'year',this.value)"></td><td><input type="number" value="${v.lifeYears || 8}" step="1" min="1" max="20" data-row="${i}" data-field="lifeYears" oninput="updateVehicle(${i},'lifeYears',this.value)"></td><td><select data-row="${i}" data-field="status" onchange="updateVehicle(${i},'status',this.value)"><option value="active"${status === 'active' ? ' selected' : ''}>Active</option><option value="in_repair"${status === 'in_repair' ? ' selected' : ''}>In Repair</option><option value="sold"${status === 'sold' ? ' selected' : ''}>Sold</option></select></td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;">${fmt$(dep)}</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;color:${equityColor};font-weight:600;">${fmt$(equity)}</td><td class="actions-cell"><button class="btn btn-sm btn-danger" onclick="removeVehicle(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
   restoreFocus(tbody, focusInfo);
 
-  // update stats
   const activeCount = fleetActiveCount();
   const totalValue = fleetTotalValue();
   const totalOwing = fleetTotalOwing();
@@ -1374,34 +2023,21 @@ function updateVehicle(i, field, val) {
   if (!state.fleet) state.fleet = [];
   const numericFields = ['purchasePrice', 'loanOwing', 'year', 'lifeYears'];
   state.fleet[i][field] = numericFields.includes(field) ? (parseFloat(val) || 0) : val;
-  // status changes affect dep & overhead — re-render appropriately
+  renderFleet();
   if (field === 'status' || numericFields.includes(field)) {
-    renderFleet();
-    renderOverhead();
-    renderDashboard();
-  } else {
-    // light update
-    renderFleet();
+    renderOverhead(); renderDashboard(); renderPricebook();
   }
   debouncedSave();
 }
-
 function addVehicle() {
   if (!state.fleet) state.fleet = [];
   state.fleet.push({ make: 'New Vehicle', rego: '', purchasePrice: 40000, loanOwing: 0, year: new Date().getFullYear(), lifeYears: 8, status: 'active' });
-  renderFleet();
-  renderOverhead();
-  renderDashboard();
-  debouncedSave();
+  renderFleet(); renderOverhead(); renderDashboard(); renderPricebook(); debouncedSave();
 }
-
 function removeVehicle(i) {
   if (!state.fleet) return;
   state.fleet.splice(i, 1);
-  renderFleet();
-  renderOverhead();
-  renderDashboard();
-  debouncedSave();
+  renderFleet(); renderOverhead(); renderDashboard(); renderPricebook(); debouncedSave();
 }
 
 function renderJobs() {
@@ -1416,7 +2052,6 @@ function renderJobs() {
   restoreFocus(tbody, focusInfo);
 
   const sel = document.getElementById('qJobType');
-  const currentVal = sel.value;
   sel.innerHTML = '';
   state.jobs.forEach((j, i) => {
     const opt = document.createElement('option');
@@ -1427,7 +2062,6 @@ function renderJobs() {
 }
 function updateJob(i, field, val) {
   state.jobs[i][field] = (field === 'hours') ? (parseFloat(val) || 0) : val;
-  // update dropdown text without re-rendering table
   const opt = document.querySelector(`#qJobType option[value="${i}"]`);
   if (opt && field === 'name') opt.textContent = val;
   debouncedSave();
@@ -1439,7 +2073,6 @@ function renderQuoteTeamPicker() {
   const wrap = document.getElementById('qTeamPicker');
   wrap.innerHTML = '';
   state.team.forEach((p, i) => {
-    // skip pure admin staff (0% billable) - they don't go on jobs
     const billable = p.billablePct !== undefined ? p.billablePct : 100;
     if (billable === 0) return;
     const sel = localQuote.selectedTeam.includes(i);
@@ -1459,9 +2092,9 @@ function renderQuoteTeamPicker() {
 }
 
 function renderQuote() {
-  // mode toggle visibility
   const isHourly = localQuote.pricingMode === 'hourly';
   document.getElementById('qPricingMode').value = localQuote.pricingMode;
+  document.getElementById('qCategory').value = localQuote.category;
   document.getElementById('qFixedPriceField').style.display = isHourly ? 'none' : '';
   document.getElementById('qHourlyRateField').style.display = isHourly ? '' : 'none';
   document.getElementById('qHourlySliderField').style.display = isHourly ? '' : 'none';
@@ -1486,9 +2119,7 @@ function renderQuote() {
   let labourCost = 0;
   team.forEach(p => { labourCost += trueCost(p) * hours; });
 
-  // labour charge depends on pricing mode
   const labourCharge = isHourly ? localQuote.chargeRate * hours : localQuote.fixedPrice;
-
   const overheadAllocated = ohPerHr * hours;
   const materialsCharge = materials * (1 + markup / 100);
   const totalCharge = labourCharge + materialsCharge;
@@ -1496,7 +2127,6 @@ function renderQuote() {
   const profit = totalCharge - totalCost;
   const margin = totalCharge > 0 ? (profit / totalCharge) * 100 : 0;
 
-  // implied hourly rate = labour charge / hours
   const impliedRate = hours > 0 ? labourCharge / hours : 0;
   const vsStandard = impliedRate - 180;
 
@@ -1507,7 +2137,6 @@ function renderQuote() {
   document.getElementById('rMargin').className = 'stat-value ' + (margin >= 15 ? 'good' : margin >= 0 ? '' : 'bad');
   document.getElementById('rGst').textContent = fmt$(totalCharge * 1.1);
 
-  // implied rate stats - only really meaningful in fixed mode but useful both
   const implEl = document.getElementById('rImplied');
   implEl.textContent = fmt$2(impliedRate);
   implEl.className = 'stat-value ' + (impliedRate >= 180 ? 'good' : impliedRate >= 140 ? '' : 'bad');
@@ -1522,7 +2151,7 @@ function renderQuote() {
   } else if (vsStandard < 0) {
     vsEl.textContent = '−' + fmt$2(Math.abs(vsStandard));
     vsEl.className = 'stat-value bad';
-    document.getElementById('rVsStandardSub').textContent = 'Below standard — leaving money on the table';
+    document.getElementById('rVsStandardSub').textContent = 'Below standard — leaving money on table';
   } else {
     vsEl.textContent = 'On par';
     vsEl.className = 'stat-value';
@@ -1550,6 +2179,174 @@ function renderQuote() {
     bd += '<div class="row total"><span>NET PROFIT</span><span>' + fmt$(profit) + '</span></div>';
   }
   document.getElementById('rBreakdown').innerHTML = bd;
+}
+
+function openPresentation() {
+  const team = localQuote.selectedTeam.map(i => state.team[i]).filter(Boolean);
+  if (team.length === 0) {
+    toast('Select a crew first');
+    return;
+  }
+  if (localQuote.hours <= 0) {
+    toast('Enter hours first');
+    return;
+  }
+  renderPresentation();
+  document.getElementById('presentationModal').classList.add('show');
+}
+
+function closePresentation() {
+  document.getElementById('presentationModal').classList.remove('show');
+}
+
+function renderPresentation() {
+  const team = localQuote.selectedTeam.map(i => state.team[i]).filter(Boolean);
+  const hours = localQuote.hours;
+  const materials = localQuote.materials;
+  const markup = localQuote.markup;
+
+  const labourCharge = localQuote.pricingMode === 'hourly' ? localQuote.chargeRate * hours : localQuote.fixedPrice;
+  const materialsCharge = materials * (1 + markup / 100);
+  const baseQuote = labourCharge + materialsCharge;
+
+  const goodPrice = baseQuote * 0.85;
+  const betterPrice = baseQuote;
+  const bestPrice = baseQuote * 1.25;
+
+  const cat = localQuote.category;
+  const features = featuresForCategory(cat);
+
+  const wrap = document.getElementById('presentationTiers');
+  wrap.innerHTML = `
+    <div class="tier">
+      <div class="tier-header">
+        <div class="tier-name">GOOD</div>
+        <div class="tier-tagline">${features.good.tagline}</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-price">${fmt$(goodPrice)}</div>
+        <div class="tier-price-sub">+ GST · ${fmt$(goodPrice * 1.1)} inc</div>
+        <ul class="tier-features">
+          ${features.good.items.map(f => `<li>${f}</li>`).join('')}
+          ${features.good.crosses.map(f => `<li class="cross">${f}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+    <div class="tier recommended">
+      <div class="tier-header">
+        <div class="tier-name">BETTER</div>
+        <div class="tier-tagline">${features.better.tagline}</div>
+        <div class="tier-recommended-pill">★ RECOMMENDED</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-price">${fmt$(betterPrice)}</div>
+        <div class="tier-price-sub">+ GST · ${fmt$(betterPrice * 1.1)} inc</div>
+        <ul class="tier-features">
+          ${features.better.items.map(f => `<li>${f}</li>`).join('')}
+          ${features.better.crosses.map(f => `<li class="cross">${f}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+    <div class="tier">
+      <div class="tier-header">
+        <div class="tier-name">BEST</div>
+        <div class="tier-tagline">${features.best.tagline}</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-price">${fmt$(bestPrice)}</div>
+        <div class="tier-price-sub">+ GST · ${fmt$(bestPrice * 1.1)} inc</div>
+        <ul class="tier-features">
+          ${features.best.items.map(f => `<li>${f}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
+function featuresForCategory(cat) {
+  const sets = {
+    install: {
+      good: {
+        tagline: 'The basics — system installed and working',
+        items: ['Full system supply & install', 'Standard 5-year manufacturer warranty', 'Compliance certificate', '12-month workmanship warranty', 'Standard installation positioning'],
+        crosses: ['No annual maintenance', 'No premium service priority', 'Basic mounting brackets only']
+      },
+      better: {
+        tagline: 'Extended warranty + first service included',
+        items: ['Everything in GOOD, plus:', 'Extended 7-year warranty', 'First annual service included (year 1)', 'Premium mounting brackets & condensate management', 'Optimal positioning consultation', 'Priority callback if any issues', '12-month price-lock on accessories'],
+        crosses: ['No ongoing maintenance plan']
+      },
+      best: {
+        tagline: 'Full peace of mind — 5 years covered',
+        items: ['Everything in BETTER, plus:', '5-year maintenance plan included', '5 annual services pre-booked & paid', 'Priority service slot — front of queue', 'Filter replacements included', 'WiFi controller + smart setup', 'Surge protection installed', 'Member pricing on any future work', 'Lifetime workmanship warranty on install']
+      }
+    },
+    service: {
+      good: {
+        tagline: 'Fix the immediate problem',
+        items: ['Diagnose the fault', 'Repair completed today', '90-day repair warranty', 'Test & verify operation'],
+        crosses: ['No full system check', 'No future maintenance']
+      },
+      better: {
+        tagline: 'Fix it + check the whole system',
+        items: ['Everything in GOOD, plus:', 'Full system health check', 'Filter clean & inspection', 'Refrigerant level check', 'Electrical safety check', '6-month repair warranty', 'Written report with photos'],
+        crosses: ['No ongoing maintenance plan']
+      },
+      best: {
+        tagline: 'Repair + 12-month peace of mind plan',
+        items: ['Everything in BETTER, plus:', '12-month maintenance plan', '2 scheduled services included', 'Priority callback (24hr response)', 'No call-out fee for further visits', 'Filter replacements included', 'Member discount on any major work']
+      }
+    },
+    maintenance: {
+      good: {
+        tagline: 'Annual service — once a year',
+        items: ['Single comprehensive service', 'Filter clean', 'Performance check', 'Written report'],
+        crosses: ['No priority callback', 'No discount on repairs']
+      },
+      better: {
+        tagline: 'Twice-yearly — pre-summer & pre-winter',
+        items: ['2 services per year (heat & cool seasons)', 'Filter clean & inspection', 'Refrigerant & electrical checks', 'Priority booking', '10% discount on any repairs', 'Written report after each visit'],
+        crosses: ['No emergency callout coverage']
+      },
+      best: {
+        tagline: 'Total care — services + emergency cover',
+        items: ['2 services per year', 'Priority emergency callout (24hr)', 'No call-out fee for members', '20% discount on any repairs', 'Filter replacements included', 'Health check & report after each visit', 'Annual system performance review']
+      }
+    },
+    investigation: {
+      good: {
+        tagline: 'Identify the issue',
+        items: ['Site investigation', 'Diagnosis report', 'Recommended fix', 'Quote for repair work'],
+        crosses: ['Repair work quoted separately']
+      },
+      better: {
+        tagline: 'Investigate + repair in one visit',
+        items: ['Everything in GOOD, plus:', 'Repair completed same visit (where possible)', 'Full system test post-repair', '6-month repair warranty', 'Written report with photos'],
+        crosses: ['No ongoing maintenance']
+      },
+      best: {
+        tagline: 'Investigate + repair + protect',
+        items: ['Everything in BETTER, plus:', '12-month repair warranty', '12-month maintenance plan included', '2 follow-up services scheduled', 'Priority callback if recurrence', 'Member pricing on any related work']
+      }
+    },
+    rebate: {
+      good: {
+        tagline: 'Standard rebate-funded install',
+        items: ['Rebate-eligible system install', 'Compliance certificate', 'Standard manufacturer warranty', '12-month workmanship warranty', 'Rebate paperwork handled'],
+        crosses: ['No additional service cover']
+      },
+      better: {
+        tagline: 'Rebate install + first service included',
+        items: ['Everything in GOOD, plus:', 'First annual service included', 'Premium mounting & finish', 'Priority callback support'],
+        crosses: []
+      },
+      best: {
+        tagline: 'Rebate install + ongoing care',
+        items: ['Everything in BETTER, plus:', '3-year maintenance plan', 'Annual services pre-booked', 'Priority service queue', 'Member pricing']
+      }
+    }
+  };
+  return sets[cat] || sets.install;
 }
 
 function renderDashboard() {
@@ -1632,9 +2429,11 @@ function resetAll() {
   renderAll(); saveToCloud(); toast('Reset complete');
 }
 
-function escapeHtml(str) { return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-function renderAll() { renderOverhead(); renderTeam(); renderFleet(); renderJobs(); renderQuoteTeamPicker(); renderQuote(); renderDashboard(); }
+function renderAll() {
+  renderOverhead(); renderTeam(); renderFleet(); renderJobs();
+  renderQuoteTeamPicker(); renderQuote(); renderPricebook();
+  renderTargets(); renderDashboard();
+}
 
 init();
 </script>
